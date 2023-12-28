@@ -9,13 +9,16 @@ export default defineComponent({
   components: {KnowledgeLayout},
   props: {
     id: {
-      type: Object as PropType<number | string>,
-      default: 1,
+      type: Object as PropType<string>,
     }
   },
   computed: {
     idToNumber() {
-      return Number.parseInt(this.id.toString());
+      if (this.id) {
+        return Number.parseInt(this.id.toString());
+      } else {
+        return 1;
+      }
     },
   },
   data() {
