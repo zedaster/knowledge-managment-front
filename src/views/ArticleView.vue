@@ -1,6 +1,4 @@
 <script lang="ts">
-
-
 import type {PropType} from "vue";
 import {defineComponent} from "vue";
 import KnowledgeLayout from "@/views/KnowledgeLayout.vue";
@@ -31,10 +29,10 @@ export default defineComponent({
 </script>
 
 <template>
-    <KnowledgeLayout :selected-id="this.idToNumber" :tree="tree">
-      <h1>{{ this.articles.getArticleById(idToNumber).title }}</h1>
-      <span v-html="this.articles.getArticleById(idToNumber).content"></span>
-    </KnowledgeLayout>
+  <KnowledgeLayout :selected-id="this.idToNumber" :tree="tree">
+    <h1>{{ this.articles.getArticleById(idToNumber).title }}</h1>
+    <span v-html="this.articles.getArticleById(idToNumber).content"></span>
+  </KnowledgeLayout>
 </template>
 
 <style scoped>

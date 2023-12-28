@@ -3,10 +3,11 @@
 import {defineComponent, PropType} from "vue";
 import KnowledgeMenu from "@/components/knowledge/KnowledgeMenu.vue";
 import type {ArticleTree} from "@/models/ArticleTree";
+import KnowledgeBlock from "@/components/knowledge/KnowledgeBlock.vue";
 
 
 export default defineComponent({
-  components: {KnowledgeMenu},
+  components: {KnowledgeBlock, KnowledgeMenu},
   props: {
     tree: {
       type: Object as PropType<ArticleTree>,
@@ -25,14 +26,14 @@ export default defineComponent({
     <div class="container h-100">
       <div class="row gx-3 h-100">
         <div class="col-3">
-          <div class="block px-3 py-4">
+          <KnowledgeBlock class="px-3 py-4">
             <KnowledgeMenu :tree="tree" :selected-id="selectedId"/>
-          </div>
+          </KnowledgeBlock>
         </div>
         <div class="col-9">
-          <div class="block py-4 px-5">
+          <KnowledgeBlock class="py-4 px-5">
             <slot />
-          </div>
+          </KnowledgeBlock>
         </div>
       </div>
     </div>
@@ -42,11 +43,5 @@ export default defineComponent({
 <style scoped>
 main {
   padding-top: 30px;
-}
-
-.block {
-  background-color: var(--block-background);
-  border-radius: 20px;
-  height: 100%;
 }
 </style>
