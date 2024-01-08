@@ -1,7 +1,18 @@
-<script setup lang="ts"></script>
+<script lang="ts">
+import {defineComponent} from "vue";
+
+export default defineComponent({
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  }
+});
+</script>
 
 <template>
-  <button type="button" class="btn py-1 px-3">
+  <button type="button" class="btn py-1 px-3" :disabled="disabled">
     <slot/>
   </button>
 </template>
@@ -23,6 +34,7 @@ button {
   background-color: var(--accent);
   color: white;
 }
+
 button:hover {
   color: var(--accent);
   border: 3px solid var(--accent);

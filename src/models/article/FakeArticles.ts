@@ -1,4 +1,4 @@
-import type {Article} from "@/models/Article";
+import type {Article} from "@/models/article/Article";
 
 export class FakeArticles {
     private readonly articles : Article[]  = [

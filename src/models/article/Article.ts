@@ -1,4 +1,4 @@
-import type {ArticleLink} from "@/models/ArticleLink";
+import type {ArticleLink} from "@/models/article/ArticleLink";
 
 export interface Article extends ArticleLink {
     author: string

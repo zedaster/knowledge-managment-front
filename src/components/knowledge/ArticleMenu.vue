@@ -3,7 +3,7 @@
 import MenuArrowIcon from "@/components/icons/MenuArrowIcon.vue";
 import {defineComponent} from "vue";
 import type {PropType} from "vue";
-import type {ArticleTree} from "@/models/ArticleTree";
+import type {ArticleTree} from "@/models/article/ArticleTree";
 
 export default defineComponent({
   components: {MenuArrowIcon},

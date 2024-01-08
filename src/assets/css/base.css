@@ -1,7 +1,8 @@
 :root {
     --block-background: #F6F6F4;
-    --muted: #14191A;
-    --accent: #EF3B24
+    --muted: #6c757d;
+    --accent: #EF3B24;
+
 }
 
 html, body, #app {

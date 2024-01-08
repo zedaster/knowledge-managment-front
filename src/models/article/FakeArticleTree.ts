@@ -1,5 +1,5 @@
-import type {ArticleTree} from "@/models/ArticleTree";
-import type {ArticleLink} from "@/models/ArticleLink";
+import type {ArticleTree} from "@/models/article/ArticleTree";
+import type {ArticleLink} from "@/models/article/ArticleLink";
 
 export class FakeArticleTree implements ArticleTree {
     get linksByLevel(): ArticleLink[][] {

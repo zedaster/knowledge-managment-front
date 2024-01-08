@@ -6,10 +6,13 @@ import PlusIcon from "@/components/icons/PlusIcon.vue";
 import AddButton from "@/components/knowledge/AddButton.vue";
 import HomeMenuIcon from "@/components/icons/HomeMenuIcon.vue";
 import ArticlesMenuIcon from "@/components/icons/ArticlesMenuIcon.vue";
-import {ArticleTree} from "@/models/ArticleTree";
+import {ArticleTree} from "@/models/article/ArticleTree";
+import FormulaMenuIcon from "@/components/icons/FormulaMenuIcon.vue";
+import router from "@/router";
 
 export default defineComponent({
   components: {ArticlesMenuIcon, HomeMenuIcon, AddButton, PlusIcon, ArticleMenu, MenuArrowIcon},
+
   props: {
     tree: {
       type: Object as PropType<ArticleTree>,
@@ -20,6 +23,7 @@ export default defineComponent({
       required: true,
     }
   },
+
   data() {
     return {
       navItems: [
@@ -29,11 +33,22 @@ export default defineComponent({
           route: 'home'
         },
         {
+          title: 'Формулы',
+          icon: FormulaMenuIcon,
+          route: 'formulas'
+        },
+        {
           title: 'Статьи',
           icon: ArticlesMenuIcon,
           route: 'article'
         }
       ]
+    }
+  },
+
+  methods: {
+    openAddArticlePage() {
+      router.push({name: 'add_article'})
     }
   }
 })
@@ -59,7 +74,7 @@ export default defineComponent({
                  :selected-id="selectedId" />
   </ul>
   <div class="spacer"></div>
-  <AddButton class="w-100" />
+  <AddButton class="w-100" @click="openAddArticlePage">Новая статья</AddButton>
 </template>
 
 <style scoped>

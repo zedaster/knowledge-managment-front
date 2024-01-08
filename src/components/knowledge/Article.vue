@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import type {Article} from "@/models/Article";
+import type {Article} from "@/models/article/Article";
 
 const RU_MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября',
   'ноября', 'декабря'];

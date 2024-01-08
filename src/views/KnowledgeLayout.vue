@@ -2,10 +2,13 @@
 
 import {defineComponent, PropType} from "vue";
 import KnowledgeMenu from "@/components/knowledge/KnowledgeMenu.vue";
-import type {ArticleTree} from "@/models/ArticleTree";
+import type {ArticleTree} from "@/models/article/ArticleTree";
 import KnowledgeContainer from "@/components/knowledge/KnowledgeContainer.vue";
 
-
+/**
+ * Layout for primary pages of the project. It contains two columns. The left one is {@link KnowledgeMenu} and the
+ * right one contains the child HTML of the component
+ */
 export default defineComponent({
   components: {KnowledgeContainer, KnowledgeMenu},
   props: {

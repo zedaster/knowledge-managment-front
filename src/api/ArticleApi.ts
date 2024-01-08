@@ -1,4 +1,4 @@
-import type {ArticleLink} from "@/models/ArticleLink";
+import type {ArticleLink} from "@/models/article/ArticleLink";
 
 export class ArticleApi {
     public getRootArticleLinks() : ArticleLink[] {

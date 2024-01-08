@@ -2,8 +2,8 @@
 import type {PropType} from "vue";
 import {defineComponent} from "vue";
 import KnowledgeLayout from "@/views/KnowledgeLayout.vue";
-import {FakeArticleTree} from "@/models/FakeArticleTree";
-import {FakeArticles} from "@/models/FakeArticles";
+import {FakeArticleTree} from "@/models/article/FakeArticleTree";
+import {FakeArticles} from "@/models/article/FakeArticles";
 
 export default defineComponent({
   components: {KnowledgeLayout},
