@@ -1,22 +1,22 @@
 <script lang="ts">
 
-import KnowledgeBlock from "@/components/knowledge/KnowledgeBlock.vue";
 import {defineComponent} from "vue";
+import KnowledgeContainer from "@/components/knowledge/KnowledgeContainer.vue";
 
 export default defineComponent({
-  components: {KnowledgeBlock},
+  components: {KnowledgeContainer},
 })
 </script>
 
 <template>
 <main class="h-100">
   <div class="container h-100">
-    <KnowledgeBlock class="py-4 px-5">
+    <KnowledgeContainer class="py-4 px-5">
       <h1 contenteditable="true">Заголовок</h1>
       <p contenteditable="true">
         Контент для статьи
       </p>
-    </KnowledgeBlock>
+    </KnowledgeContainer>
   </div>
 
 </main>
