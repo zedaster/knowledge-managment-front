@@ -5,10 +5,18 @@
 h1, .navbar .navbar-title {
   /* Заголовок первого уровня */
   font-family: Grtsk Exa, Roboto, sans-serif;
-  font-size: 24px;
+  font-size: 28px;
   font-style: normal;
   font-weight: 600;
-  line-height: 32px; /* 133.333% */
+  line-height: 36px;
+}
+
+h2 {
+  font-family: Grtsk Exa, Roboto, sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 32px;
 }
 
 .nav-item {
@@ -19,7 +27,7 @@ h1, .navbar .navbar-title {
   line-height: 24px; /* 133.333% */
 }
 
-p {
+p, li {
   font-family: Grtsk Exa, Roboto, sans-serif;
   font-size: 14px;
   font-style: normal;

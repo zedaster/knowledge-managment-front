@@ -10,18 +10,21 @@ export class FakeArticleTree implements ArticleTree {
                 this.fakeLink(3, "Оптимизация процессов строительства"),
                 this.fakeLink(4, "Эффективное управление рисками в деятельности"),
                 this.fakeLink(5, "Инновации в проектировании жилых комплексов"),
+                this.fakeLink(6, "Как мы контролируем качество строительства"),
+                this.fakeLink(7, "Эко-стандарты в строительстве"),
             ],
-            [
-                this.fakeLink(8, "Роль инноваций в развитии жилищного сектора"),
-            ],
-            [
-                this.fakeLink(10, "Эффективность управления проектами в жилищном секторе")
-            ]
+            // [
+            //     this.fakeLink(8, "Роль инноваций в развитии жилищного сектора"),
+            // ],
+            // [
+            //     this.fakeLink(10, "Эффективность управления проектами в жилищном секторе")
+            // ]
         ]
     }
 
     get parentIds(): number[] {
-        return [5, 8];
+        // return [5, 8];
+        return [];
     }
 
     private fakeLink(id: number, title: string) : ArticleLink {
