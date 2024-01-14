@@ -61,7 +61,7 @@ export class FormulaApi {
      * @param id
      */
     public async getOneById(id: number): Promise<Formula | undefined> {
-        return this.getLocalFormulas().find((f) => f.id === id);
+        return this.getLocalFormulas().find((f) => f.id == id);
     }
 
     /**
@@ -110,10 +110,18 @@ export class FormulaApi {
         this.saveLocalFormulas(newFormulas);
     }
 
+    /**
+     * Gets array of Formula object from local storage
+     * @private
+     */
     private getLocalFormulas(): Array<Formula> {
         return JSON.parse(localStorage.getItem('formulas') as string);
     }
 
+    /**
+     * Saves array of Formula object from local storage
+     * @private
+     */
     private saveLocalFormulas(formulas: Array<Formula>): void {
         localStorage.setItem('formulas', JSON.stringify(formulas))
     }

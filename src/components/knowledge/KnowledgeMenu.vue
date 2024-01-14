@@ -48,7 +48,7 @@ export default defineComponent({
 
   methods: {
     openAddArticlePage() {
-      router.push({name: 'add_article'})
+      router.push({name: 'add_article', params: {parentId: this.selectedId}})
     }
   }
 })

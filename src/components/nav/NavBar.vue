@@ -13,6 +13,10 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    editButtonActive: {
+      type: Boolean,
+      default: true
+    }
   },
 
   emits: ['save'],
@@ -86,8 +90,12 @@ export default defineComponent({
         <!-- Save or cancel buttons for article editing -->
         <div v-if="showAddOptions" class="col col-auto">
           <div class="d-flex gap-2">
-            <SiteButton @click="goBack"><span>Отменить</span></SiteButton>
-            <SiteButton @click="save"><span>Сохранить</span></SiteButton>
+            <SiteButton @click="goBack" :disabled="!this.editButtonActive">
+              <span>Отменить</span>
+            </SiteButton>
+            <SiteButton @click="save" :disabled="!this.editButtonActive">
+              <span>Сохранить</span>
+            </SiteButton>
           </div>
         </div>
       </div>

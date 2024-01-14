@@ -45,7 +45,9 @@ export default defineComponent({
       selectedFormulaId: null as null | number,
       formulaOptions: null as null | Map<number, Formula>,
 
-      hoverContentIndex: null as null | number
+      hoverContentIndex: null as null | number,
+
+      isSaveButtonActive: true,
     }
   },
 
@@ -69,12 +71,14 @@ export default defineComponent({
 
   methods: {
     save() {
+      this.isSaveButtonActive = false;
       this.articleApi.createArticle({
         title: new SpaceCleanService().trimAndFormatMultiSpaces(this.title),
         content: this.getResultContent(),
         parentId: this.parentIdToNumber
-      })
-      this.$router.back();
+      }).then(() => {
+        this.$router.go(-1);
+      });
     },
 
     addText() {
@@ -100,8 +104,10 @@ export default defineComponent({
       this.title = event.target.innerText;
     },
 
-    inputContent(id, event) {
-      //this.contents[id] = event.target.innerText;
+    inputTextContent(id, event) {
+      this.contents[id] = {
+        text: event.target.innerText
+      }
     },
 
     isFormulaElement(content: any): content is FormulaAddElement {
@@ -113,7 +119,6 @@ export default defineComponent({
     },
 
     removeContent(index: number) {
-      console.log('Remove content')
       const newContents = [];
       for (let i = 0; i < this.contents.length; i++) {
         if (i !== index) {
@@ -135,9 +140,9 @@ export default defineComponent({
       const codedContents = []
       for (const content of this.contents) {
         if (isTextAddElement(content)) {
-          codedContents.push(content.text)
+          codedContents.push(`<p>${new SpaceCleanService().trimAndFormatMultiSpaces(content.text)}</p>`)
         } else if (isFormulaAddElement(content)) {
-          codedContents.push(`<FormulaContainer formula-id="${content.formulaId}">`)
+          codedContents.push(`<FormulaContainer formula-id="${content.formulaId}" />`)
         }
       }
       return codedContents.join("")
@@ -162,7 +167,7 @@ export default defineComponent({
              @mouseleave="clearHoverContent">
           <p class="mb-0"
              v-if="isTextElement(content)"
-             @input="(e) => inputContent(i, e)"
+             @input="(e) => inputTextContent(i, e)"
              contenteditable="true">
             {{ content.text }}
           </p>

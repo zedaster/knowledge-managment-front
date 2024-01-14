@@ -6,9 +6,10 @@ import {ArticleApi} from "@/api/ArticleApi";
 import type {Article} from "@/models/article/Article";
 import NavBar from "@/components/nav/NavBar.vue";
 import type {ArticleTree} from "@/models/article/ArticleTree";
+import RenderedArticleContent from "@/components/knowledge/RenderedArticleContent.vue";
 
 export default defineComponent({
-  components: {NavBar, KnowledgeLayout},
+  components: {RenderedArticleContent, NavBar, KnowledgeLayout},
   props: {
     id: {
       type: Object as PropType<string>,
@@ -32,6 +33,7 @@ export default defineComponent({
       if (this.id) {
         return Number.parseInt(this.id.toString());
       } else {
+        // TODO: Return null and load top article
         return 1;
       }
     },
@@ -69,7 +71,7 @@ export default defineComponent({
 
     <div v-if="article !== undefined">
       <h1>{{ this.article.title }}</h1>
-      <span v-html="this.article.content"></span>
+      <RenderedArticleContent :html="this.article.content"/>
     </div>
   </KnowledgeLayout>
 </template>

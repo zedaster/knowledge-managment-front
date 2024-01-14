@@ -75,7 +75,18 @@ export class ArticleApi {
      * @param newArticle params for the new article
      */
     public async createArticle(newArticle: { title: string; content: string; parentId: number | null }) {
-        // TODO
+        await axios.post(config.CREATE_ARTICLE, {
+            title: newArticle.title,
+            content: newArticle.content,
+            articleParentId: newArticle.parentId,
+            author: 'Sergey' // TODO: Убрать
+        }, {
+            auth: {
+                username: 'richie',
+                password: '123'
+            },
+            withCredentials: true,
+        });
     }
 
     public async updateArticle(updateContent: { title: string; content: string; }) {

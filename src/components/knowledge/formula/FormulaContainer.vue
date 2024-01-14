@@ -23,26 +23,42 @@ export default defineComponent({
   },
 
   mounted() {
+    console.log("Formula mounted with id " + this.formulaId)
     this.api.getOneById(this.formulaId).then((formula: Formula) => {
       this.formula = formula;
+      // @ts-ignore
+      this.$refs.mathField.value = formula.formula;
     })
+  },
+
+  watch: {
+    formula(newValue) {
+      // @ts-ignore
+      this.$refs.mathField.value = newValue.formula;
+    }
   }
 })
 </script>
 
 <template>
-  <div contenteditable="false">
-    <FormulaField v-if="formula != null"
-                  :modelValue="formula!.formula"
-                  :result="formula!.result"
-                  :content-editable="false"/>
+  <div class="row gx-1">
+    <div class="col">
+      <math-field ref="mathField" :contenteditable="false"></math-field>
+    </div>
   </div>
-
-  <!--  <FormulaDependencies v-model="formula!.dependencies"-->
-  <!--                       :possible-variables="possibleVariables"-->
-  <!--                       :dependency-options="dependencyOptions"/>-->
 </template>
 
 <style scoped>
+math-field {
+  font-size: 1.2rem;
+  width: 100%;
+}
 
+math-field::part(menu-toggle), math-field::part(virtual-keyboard-toggle), math-field::part(keyboard-sink) {
+  color: red;
+}
+
+math-field::part(menu-toggle):hover, math-field::part(virtual-keyboard-toggle):hover {
+  color: var(--muted);
+}
 </style>

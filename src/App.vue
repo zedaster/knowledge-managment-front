@@ -8,10 +8,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <RouterView/>
-  <footer>
-    <div class="p-3"></div>
-  </footer>
+  <RouterView class="mb-3"/>
 </template>
 
 <style scoped>
