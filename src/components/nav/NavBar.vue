@@ -7,13 +7,28 @@ import {defineComponent} from "vue";
 
 export default defineComponent({
   components: {SearchInput, SiteButton, ProfileIcon},
-  data() {
-    return {
-      showSearch: true,
-      showProfileOptions: true,
-      showAddOptions: false,
+
+  props: {
+    editMode: {
+      type: Boolean,
+      default: false
+    },
+  },
+
+  emits: ['save'],
+
+  computed: {
+    showSearch() {
+      return !this.editMode
+    },
+    showProfileOptions() {
+      return !this.editMode
+    },
+    showAddOptions() {
+      return this.editMode
     }
   },
+
   watch: {
     // Use the `$route` special key to react to route changes
     '$route'(to) {
@@ -28,12 +43,13 @@ export default defineComponent({
       this.showAddOptions = false;
     },
   },
+
   methods: {
     goBack() {
       this.$router.back()
     },
-    createArticle() {
-      // TODO
+    save() {
+      this.$emit('save');
     }
   }
 })
@@ -71,7 +87,7 @@ export default defineComponent({
         <div v-if="showAddOptions" class="col col-auto">
           <div class="d-flex gap-2">
             <SiteButton @click="goBack"><span>Отменить</span></SiteButton>
-            <SiteButton @click="createArticle"><span>Сохранить</span></SiteButton>
+            <SiteButton @click="save"><span>Сохранить</span></SiteButton>
           </div>
         </div>
       </div>

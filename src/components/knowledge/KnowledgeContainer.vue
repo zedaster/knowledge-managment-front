@@ -12,6 +12,6 @@
 .block {
   background-color: var(--block-background);
   border-radius: 20px;
-  height: 100%;
+  min-height: 100%;
 }
 </style>

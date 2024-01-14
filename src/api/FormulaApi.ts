@@ -45,6 +45,26 @@ export class FormulaApi {
     }
 
     /**
+     * Requests all formulas as map of id => formula
+     */
+    public async getAllAsMap(): Promise<Map<number, Formula>> {
+        const allFormulas = await this.getAll();
+        const map = new Map<number, Formula>();
+        for (const formula of allFormulas) {
+            map.set(formula.id, formula);
+        }
+        return map;
+    }
+
+    /**
+     * Request formula
+     * @param id
+     */
+    public async getOneById(id: number): Promise<Formula | undefined> {
+        return this.getLocalFormulas().find((f) => f.id === id);
+    }
+
+    /**
      * Updates formula with the same id
      * @param newFormula formula object with updated properties.
      */

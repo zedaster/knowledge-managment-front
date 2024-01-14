@@ -1,8 +1,8 @@
 <script lang="ts">
 
-import FormulaDependencySelector from "@/components/knowledge/formula/FormulaDependencySelector.vue";
 import {defineComponent, PropType, toRaw} from "vue";
 import Formula from "@/models/formula/Formula";
+import FormulaSelector from "@/components/knowledge/formula/FormulaSelector.vue";
 import PlusIcon from "@/components/icons/PlusIcon.vue";
 import EditIcon from "@/components/icons/EditIcon.vue";
 import CancelIcon from "@/components/icons/CancelIcon.vue";
@@ -12,7 +12,7 @@ import SaveIcon from "@/components/icons/SaveIcon.vue";
  * Component to manage dependency formulas of a single formula.
  */
 export default defineComponent({
-  components: {SaveIcon, CancelIcon, EditIcon, PlusIcon, FormulaDependencySelector},
+  components: {SaveIcon, CancelIcon, EditIcon, PlusIcon, FormulaSelector},
 
   props: {
     /**
@@ -154,7 +154,7 @@ export default defineComponent({
 
           <!-- Selector of dependency formula -->
           <div class="col-auto d-flex align-items-center ms-3 me-1">
-            <FormulaDependencySelector
+            <FormulaSelector
                 v-if="isEditing"
                 :possible-options="dependencyOptionsMap"
                 :selectedId="value"

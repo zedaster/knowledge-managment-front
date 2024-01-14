@@ -7,16 +7,17 @@ import {FormulaApi} from "@/api/FormulaApi";
 import type Formula from "@/models/formula/Formula";
 import {DependencyOptionsService} from "@/service/formula/DependencyOptionsService";
 import AddButton from "@/components/knowledge/AddButton.vue";
+import NavBar from "@/components/nav/NavBar.vue";
 
 /**
  * Page to manage formulas
  */
 export default defineComponent({
-  components: {AddButton, FormulaRow, KnowledgeLayout},
+  components: {NavBar, AddButton, FormulaRow, KnowledgeLayout},
 
   data() {
     return {
-      api: new FormulaApi(),
+      articleApi: new FormulaApi(),
       isLoaded: false,
       formulas: new Array<Formula>(),
       isAdding: false
@@ -24,7 +25,7 @@ export default defineComponent({
   },
 
   mounted(): void {
-    this.api.getAll().then(formulas => {
+    this.articleApi.getAll().then(formulas => {
       this.formulas = formulas;
       this.isLoaded = true;
     });
@@ -38,19 +39,19 @@ export default defineComponent({
     updateFormula(newFormula) {
       console.log("Formula is changed");
       console.log("New formula is " + JSON.stringify(newFormula));
-      this.api.updateFormula(newFormula);
+      this.articleApi.updateFormula(newFormula);
     },
 
-    addFormula() {
+    isFormulaSelectorShowing() {
       this.isAdding = true;
-      this.api.addStandardFormula().then((newFormula) => {
+      this.articleApi.addStandardFormula().then((newFormula) => {
         this.formulas.push(newFormula);
         this.isAdding = false;
       })
     },
 
     removeFormula(id: number) {
-      this.api.removeFormula(id).then(() => {
+      this.articleApi.removeFormula(id).then(() => {
         this.formulas = this.formulas.filter((formula) => formula.id !== id);
       })
     }
@@ -59,6 +60,9 @@ export default defineComponent({
 </script>
 
 <template>
+  <header>
+    <NavBar/>
+  </header>
   <KnowledgeLayout>
     <h1>Формулы</h1>
     <br>
