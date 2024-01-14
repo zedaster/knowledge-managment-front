@@ -1,7 +1,7 @@
 import type {ArticleWithTree} from "@/models/article/ArticleWithTree";
 import axios from "axios";
 import config from "@/config/api.config"
-import type {ArticleWithTreeResponse} from "@/api/ArticleWithTreeResponse";
+import type {ArticleWithTreeDto} from "@/api/dto/ArticleWithTreeDto";
 import type {ArticleLink} from "@/models/article/ArticleLink";
 import type {Article} from "@/models/article/Article";
 
@@ -15,7 +15,7 @@ export class ArticleApi {
      */
     public async getArticleWithTreeById(id: number): Promise<ArticleWithTree> {
         const url = config.GET_SINGLE_ARTICLE + id;
-        const response = await axios.get<ArticleWithTreeResponse[]>(url, {
+        const response = await axios.get<ArticleWithTreeDto[]>(url, {
             auth: {
                 username: 'richie',
                 password: '123'
@@ -27,17 +27,17 @@ export class ArticleApi {
     }
 
     /**
-     * Maps {@link ArticleWithTreeResponse} to {@link ArticleWithTree}
+     * Maps {@link ArticleWithTreeDto} to {@link ArticleWithTree}
      * @param response The response object
      * @param articleId Id of necessary article
      * @private
      */
-    private mapToArticleWithTree(response: ArticleWithTreeResponse[], articleId: number): ArticleWithTree {
+    private mapToArticleWithTree(response: ArticleWithTreeDto[], articleId: number): ArticleWithTree {
         const links: ArticleLink[][] = [[]];
         const parentIds: number[] = [];
 
-        let activeNode = response as ArticleWithTreeResponse[] | null
-        let nextNode: ArticleWithTreeResponse[] | null = null
+        let activeNode = response as ArticleWithTreeDto[] | null
+        let nextNode: ArticleWithTreeDto[] | null = null
         let activeLevel = 0;
         let article = null as null | Article;
         while (activeNode !== null) {
