@@ -3,8 +3,8 @@
 import NavBar from "@/components/nav/NavBar.vue";
 import {defineComponent} from "vue";
 import {AuthApi} from "@/api/AuthApi";
+import type {LoginDto} from "@/api/dto/LoginDto";
 import {Tooltip} from "bootstrap";
-import type {RegisterDto} from "@/api/dto/RegisterDto";
 
 export default defineComponent({
   components: {NavBar},
@@ -12,14 +12,12 @@ export default defineComponent({
   data() {
     return {
       api: new AuthApi(),
-      registerDto: {
-        login: '',
-        email: '',
-        password: '',
-        repeatPassword: ''
-      } as RegisterDto,
+      loginDto: {
+        username: '',
+        password: ''
+      } as LoginDto,
       isFilled: false,
-      isRegistering: false,
+      isLoggingIn: false,
       tooltipText: 'Введите логин',
     }
   },
@@ -29,43 +27,33 @@ export default defineComponent({
   },
 
   methods: {
-    openLoginPage() {
-      this.$router.push({name: 'login'})
+    openRegisterPage() {
+      this.$router.push({name: 'register'})
     },
-
-    register() {
-      this.isRegistering = true;
-      this.api.register(this.registerDto).then(() => {
-        this.isRegistering = false;
-        this.openLoginPage();
+    login() {
+      this.isLoggingIn = true;
+      this.api.login(this.loginDto).then(() => {
+        this.isLoggingIn = false;
+        this.$router.push({name: 'home'})
       })
     },
 
     updateTooltip() {
       console.log('New tooltip text is ' + this.tooltipText)
-      const wrapper = this.$refs.registerButtonWrapper;
+      const wrapper = this.$refs.loginButtonWrapper;
       Tooltip.getOrCreateInstance(wrapper).setContent({'.tooltip-inner': this.tooltipText})
     }
   },
 
   watch: {
-    registerDto: {
+    loginDto: {
       handler(newDto) {
         if (newDto.login === '') {
           this.isFilled = false;
           this.tooltipText = 'Введите логин';
-        } else if (newDto.email === '') {
-          this.isFilled = false;
-          this.tooltipText = 'Введите email'
         } else if (newDto.password === '') {
           this.isFilled = false;
           this.tooltipText = 'Введите пароль'
-        } else if (newDto.repeatPassword === '') {
-          this.isFilled = false;
-          this.tooltipText = 'Повторите пароль'
-        } else if (newDto.password !== newDto.repeatPassword) {
-          this.isFilled = false;
-          this.tooltipText = 'Пароли не совпадают'
         } else {
           this.tooltipText = 'Все отлично'
           this.isFilled = true;
@@ -83,69 +71,42 @@ export default defineComponent({
     <NavBar/>
   </header>
   <main class="container h-100">
-    <div class="row justify-content-center align-items-center">
+    <div class="row justify-content-center align-items-center h-100">
       <div class="col-xl-4 col-lg-6 col-md-8 col-sm-12">
-        <h1 class="mt-4 mb-4">Регистрация</h1>
-
-        <!-- Login input -->
-        <div class="mb-3">
-          <label for="loginInput" class="form-label">Логин</label>
-          <input type="text"
-                 class="form-control"
-                 id="loginInput"
-                 v-model="registerDto.login"
-                 placeholder="Логин">
-        </div>
-
-        <!-- Email input -->
+        <h1 class="mt-4 mb-4">Вход в личный кабинет</h1>
         <div class="mb-3">
           <label for="emailInput" class="form-label">Email</label>
           <input type="email"
                  class="form-control"
                  id="emailInput"
-                 v-model="registerDto.email"
+                 v-model="loginDto.username"
                  placeholder="home@brusnika.com">
         </div>
-
-        <!-- Password input -->
         <div class="mb-4">
           <label for="passwordInput" class="form-label">Пароль</label>
           <input type="password"
                  class="form-control"
                  id="passwordInput"
-                 v-model="registerDto.password"
+                 v-model="loginDto.password"
                  placeholder="xxxxxxxxx">
         </div>
-
-        <!-- Password repeat input -->
-        <div class="mb-4">
-          <label for="passwordRepeatInput" class="form-label">Повторите пароль</label>
-          <input type="password"
-                 class="form-control"
-                 id="passwordRepeatInput"
-                 v-model="registerDto.repeatPassword"
-                 placeholder="xxxxxxxxx">
-        </div>
-
         <span class="d-inline-block w-100"
-              ref="registerButtonWrapper"
+              ref="loginButtonWrapper"
               data-bs-toggle="tooltip"
               data-bs-placement="top"
-              title="default"
-        >
+              title="default">
           <button type="button"
                   class="btn btn-dark btn-login mb-3"
-                  :disabled="!isFilled || isRegistering">
-          <span>Зарегистрироваться</span>
-        </button>
+                  :disabled="isLoggingIn || !isFilled"
+                  @click="login">
+            <span>Войти</span>
+          </button>
         </span>
-
-
         <button type="button"
                 class="btn btn-outline-dark btn-reg-now mb-4"
-                @click="openLoginPage">
-          <span class="text-muted me-1">Уже зарегистрированы?</span>
-          <span>Войти</span>
+                @click="openRegisterPage">
+          <span class="text-muted me-1">Еще не зарегистрированы?</span>
+          <span>Регистрация</span>
         </button>
       </div>
 
