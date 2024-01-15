@@ -71,7 +71,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <div v-if="article !== undefined">
+    <div v-if="article !== undefined" class="article-content">
       <h1>{{ this.article.title }}</h1>
       <RenderedArticleContent :html="this.article.content"/>
     </div>
@@ -79,5 +79,4 @@ export default defineComponent({
 </template>
 
 <style scoped>
-
 </style>

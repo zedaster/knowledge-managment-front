@@ -16,7 +16,9 @@ export default defineComponent({
 
   computed: {
     dynamicComponent() {
-      const rawHtml = this.html;
+      const rawHtml = this.html.replace(
+          /<FormulaContainer formula-id="(\d+)"\s*\/>/g,
+          '<FormulaContainer formula-id="$1"></FormulaContainer>');
 
       return defineComponent({
         render() {
@@ -29,18 +31,26 @@ export default defineComponent({
 
           doc.body.childNodes.forEach(node => {
             if (node.nodeType === Node.TEXT_NODE) {
-              vNodes.push(node.textContent);
+              vNodes.push(h("p", {
+                innerText: node.textContent,
+                class: "my-2"
+              }));
             } else if (node.nodeType === Node.ELEMENT_NODE) {
               if (node.tagName.toLowerCase() === 'formulacontainer') {
                 // Динамически рендерим компонент FormulaContainer
-                let props = {};
+                let props = {
+                  class: "my-2"
+                };
                 for (const attr of node.attributes) {
                   props[attr.name] = attr.value;
                 }
                 vNodes.push(h(FormulaContainer, props));
               } else {
                 // Просто рендерим HTML тег
-                vNodes.push(h(node.tagName.toLowerCase(), node.innerHTML));
+                vNodes.push(h(node.tagName.toLowerCase(), {
+                  innerHTML: node.innerHTML,
+                  class: "my-2"
+                }));
               }
             }
           });
