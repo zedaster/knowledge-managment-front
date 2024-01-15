@@ -11,9 +11,8 @@ export class SecureRequestManager {
     /**
      * Produces secure GET request
      * @param url URL
-     * @param refreshed For internal use, stay always false
      */
-    async get<T>(url: string, refreshed = false): Promise<T> {
+    async get<T>(url: string): Promise<T> {
         const response = await this.produceSecureRequest(() =>
             axios.get<T>(url, {
                 headers: {
@@ -61,20 +60,29 @@ export class SecureRequestManager {
                                           refreshed = false): Promise<AxiosResponse<T, any>> {
         this.authApi.throwIfNotAuthorized();
 
-        try {
-            return await requestProducer();
-        } catch (e: any) {
-            if (e.response.status === 401) {
-                if (!refreshed) {
-                    await this.authApi.refreshTokenPair();
-                    // when token refreshed, set true
-                    return this.produceSecureRequest(requestProducer, true);
-                }
-                // when all tokens expired
-                this.authApi.logout();
-                throw "Unauthenticated"
-            }
-            throw e
-        }
+        return new Promise((resolve, reject) => {
+            requestProducer()
+                .then((r) => {
+                    resolve(r)
+                })
+                .catch(async (e) => {
+                    if (!refreshed) {
+                        try {
+                            await this.authApi.refreshTokenPair();
+                        } catch (e) {
+                            this.authApi.logout();
+                            reject("Unauthenticated")
+                            return
+                        }
+                        // when token refreshed, set true
+                        const result = await this.produceSecureRequest(requestProducer, true);
+                        resolve(result);
+                        return
+                    }
+                    // when all tokens expired
+                    this.authApi.logout();
+                    reject("Unauthenticated")
+                });
+        })
     }
 }

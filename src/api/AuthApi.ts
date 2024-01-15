@@ -87,13 +87,11 @@ export class AuthApi {
         const response = await axios.post<JwtTokenPair>(config.REFRESH_TOKEN, {
             token: localStorage.getItem(AuthApi.LS_KEY_REFRESH_TOKEN)
         }, {
-            withCredentials: true,
+            withCredentials: false,
         });
 
-        if (response.status == 200) {
-            localStorage.setItem(AuthApi.LS_KEY_ACCESS_TOKEN, response.data.accessToken)
-            localStorage.setItem(AuthApi.LS_KEY_REFRESH_TOKEN, response.data.token)
-        }
+        localStorage.setItem(AuthApi.LS_KEY_ACCESS_TOKEN, response.data.accessToken)
+        localStorage.setItem(AuthApi.LS_KEY_REFRESH_TOKEN, response.data.token)
     }
 
     /**

@@ -19,7 +19,7 @@ export default defineComponent({
       type: Boolean,
       default: true
     },
-    hideProfile: {
+    authMode: {
       type: Boolean,
       default: false,
     }
@@ -38,7 +38,7 @@ export default defineComponent({
       return !this.editMode
     },
     showProfileOptions() {
-      return !this.editMode && !this.hideProfile
+      return !this.editMode && !this.authMode
     },
     showAddOptions() {
       return this.editMode
@@ -92,12 +92,14 @@ export default defineComponent({
       <div class="row w-100 justify-content-between">
         <!-- Logo -->
         <div class="col col-auto">
-          <!--          <RouterLink :to="{name: 'home'}" class="navbar-brand" href="/">-->
-          <!--            <img src="../../assets/image/logo.svg" width="24" height="24" class="d-inline-block align-top"-->
-          <!--                 alt="Логотип Брусники">-->
-          <!--            <span class="navbar-title">База знаний</span>-->
-          <!--          </RouterLink>-->
-          <div class="navbar-brand">
+
+          <RouterLink v-if="!authMode" :to="{name: 'home'}" class="navbar-brand" href="/">
+            <img src="../../assets/image/logo.svg" width="24" height="24" class="d-inline-block align-top"
+                 alt="Логотип Брусники">
+            <span class="navbar-title">База знаний</span>
+          </RouterLink>
+
+          <div class="navbar-brand" v-if="authMode">
             <img src="../../assets/image/logo.svg" width="24" height="24" class="d-inline-block align-top"
                  alt="Логотип Брусники">
             <span class="navbar-title">База знаний</span>

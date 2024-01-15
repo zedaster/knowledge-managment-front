@@ -8,4 +8,7 @@ export default {
     LOGIN: apiUrl + 'auth/login',
     REFRESH_TOKEN: apiUrl + 'refreshToken',
     DELETE_ARTICLE: apiUrl + '',
+    GET_EDIT_DATA: apiUrl + 'history/',
+    GET_CERTAIN_VERSION: apiUrl + 'history/versions/',
+    COMMIT_VERSION: apiUrl + 'history/'
 };

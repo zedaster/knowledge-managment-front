@@ -17,7 +17,7 @@ export default defineComponent({
 
   data() {
     return {
-      articleApi: new FormulaApi(),
+      editApi: new FormulaApi(),
       isLoaded: false,
       formulas: new Array<Formula>(),
       isAdding: false
@@ -25,7 +25,7 @@ export default defineComponent({
   },
 
   mounted(): void {
-    this.articleApi.getAll().then(formulas => {
+    this.editApi.getAll().then(formulas => {
       this.formulas = formulas;
       this.isLoaded = true;
     });
@@ -39,19 +39,19 @@ export default defineComponent({
     updateFormula(newFormula) {
       console.log("Formula is changed");
       console.log("New formula is " + JSON.stringify(newFormula));
-      this.articleApi.updateFormula(newFormula);
+      this.editApi.updateFormula(newFormula);
     },
 
     isFormulaSelectorShowing() {
       this.isAdding = true;
-      this.articleApi.addStandardFormula().then((newFormula) => {
+      this.editApi.addStandardFormula().then((newFormula) => {
         this.formulas.push(newFormula);
         this.isAdding = false;
       })
     },
 
     removeFormula(id: number) {
-      this.articleApi.removeFormula(id).then(() => {
+      this.editApi.removeFormula(id).then(() => {
         this.formulas = this.formulas.filter((formula) => formula.id !== id);
       })
     }

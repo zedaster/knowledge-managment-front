@@ -21,7 +21,7 @@ export default defineComponent({
 
   data() {
     return {
-      articleApi: new ArticleApi(),
+      editApi: new ArticleApi(),
       tree: undefined as ArticleTree | undefined,
       article: undefined as Article | undefined,
       isLoading: true,
@@ -54,7 +54,7 @@ export default defineComponent({
       this.isLoading = true;
 
       if (!this.id) {
-        this.articleApi.getRootTree().then((tree) => {
+        this.editApi.getRootTree().then((tree) => {
           this.tree = tree;
           this.article = undefined;
           this.isLoading = false;
@@ -64,7 +64,7 @@ export default defineComponent({
         return
       }
 
-      this.articleApi.getArticleWithTreeById(this.idToNumber!).then((articleWithTree) => {
+      this.editApi.getArticleWithTreeById(this.idToNumber!).then((articleWithTree) => {
         this.article = articleWithTree.article;
         this.tree = articleWithTree.tree;
         this.isLoading = false;
@@ -96,11 +96,16 @@ export default defineComponent({
       }
 
       this.article = undefined;
-      this.articleApi.removeById(id).then(() => {
+      this.editApi.removeById(id).then(() => {
         this.$router.push(redirectParams)
       }).catch((e) => {
         this.$router.push({name: 'login'})
       })
+    },
+
+    edit() {
+      const id = this.article!.id;
+      this.$router.push({name: 'edit_article', params: {id: id}})
     }
   }
 
@@ -123,7 +128,7 @@ export default defineComponent({
         <div class="col-12 d-flex flex-row mb-2">
           <h1 class="me-2">{{ this.article.title }}</h1>
           <div class="d-flex align-items-center gap-1" v-if="isEditIconShown">
-            <EditIcon class="edit-icon"/>
+            <EditIcon class="edit-icon" @click="edit"/>
             <RemoveIcon class="edit-icon" @click="remove"/>
           </div>
         </div>

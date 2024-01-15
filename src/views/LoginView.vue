@@ -84,7 +84,7 @@ export default defineComponent({
 
 <template>
   <header>
-    <NavBar :hide-profile="true"/>
+    <NavBar :auth-mode="true"/>
   </header>
   <main class="container h-100">
     <div class="row justify-content-center align-items-center h-100">
