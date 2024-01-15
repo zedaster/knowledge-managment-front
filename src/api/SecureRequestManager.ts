@@ -1,3 +1,4 @@
+import type {AxiosResponse} from "axios"
 import axios from "axios";
 import {AuthApi} from "@/api/AuthApi";
 
@@ -13,25 +14,14 @@ export class SecureRequestManager {
      * @param refreshed For internal use, stay always false
      */
     async get<T>(url: string, refreshed = false): Promise<T> {
-        this.authApi.throwIfNotAuthorized();
-
-        const response = await axios.get<T>(url, {
-            auth: {
-                username: 'richie',
-                password: '123'
-            },
-            withCredentials: true,
-        });
-
-        if (response.status === 403) {
-            if (!refreshed) {
-                await this.authApi.refreshTokenPair();
-                // when token refreshed, set true
-                return this.get(url, true);
-            }
-            throw "Unauthenticated"
-        }
-
+        const response = await this.produceSecureRequest(() =>
+            axios.get<T>(url, {
+                headers: {
+                    "Authorization": this.authApi.getAuthorizationHeader()
+                },
+                withCredentials: false,
+            })
+        );
         return response.data;
     }
 
@@ -39,28 +29,52 @@ export class SecureRequestManager {
      * Produces secure POST request
      * @param url URL
      * @param data Body for the POST request
-     * @param refreshed For internal use, stay always false
      */
-    async post<T>(url: string, data: any, refreshed = false): Promise<T> {
+    async post<T>(url: string, data: any): Promise<T> {
+        const response = await this.produceSecureRequest(() =>
+            axios.post<T>(url, data, {
+                headers: {
+                    "Authorization": this.authApi.getAuthorizationHeader()
+                },
+                withCredentials: false,
+            })
+        );
+        return response.data;
+    }
+
+    /**
+     * Produces secure DELETE request
+     * @param url URL
+     */
+    async delete(url: string): Promise<void> {
+        await this.produceSecureRequest(() =>
+            axios.delete(url, {
+                headers: {
+                    "Authorization": this.authApi.getAuthorizationHeader()
+                },
+                withCredentials: false,
+            })
+        );
+    }
+
+    private async produceSecureRequest<T>(requestProducer: () => Promise<AxiosResponse<T>>,
+                                          refreshed = false): Promise<AxiosResponse<T, any>> {
         this.authApi.throwIfNotAuthorized();
 
-        const response = await axios.post<T>(url, data, {
-            auth: {
-                username: 'richie',
-                password: '123'
-            },
-            withCredentials: true,
-        });
-
-        if (response.status === 403) {
-            if (!refreshed) {
-                await this.authApi.refreshTokenPair();
-                // when token refreshed, set true
-                return this.post(url, data, true);
+        try {
+            return await requestProducer();
+        } catch (e: any) {
+            if (e.response.status === 401) {
+                if (!refreshed) {
+                    await this.authApi.refreshTokenPair();
+                    // when token refreshed, set true
+                    return this.produceSecureRequest(requestProducer, true);
+                }
+                // when all tokens expired
+                this.authApi.logout();
+                throw "Unauthenticated"
             }
-            throw "Unauthenticated"
+            throw e
         }
-
-        return response.data;
     }
 }

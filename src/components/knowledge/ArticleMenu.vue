@@ -1,8 +1,8 @@
 <script lang="ts">
 
 import MenuArrowIcon from "@/components/icons/MenuArrowIcon.vue";
-import {defineComponent} from "vue";
 import type {PropType} from "vue";
+import {defineComponent} from "vue";
 import type {ArticleTree} from "@/models/article/ArticleTree";
 
 export default defineComponent({
@@ -17,16 +17,16 @@ export default defineComponent({
       required: true,
     },
     selectedId: {
-      type: Object as PropType<number>,
+      type: Object as PropType<number | undefined>,
       required: true,
     }
   },
   methods: {
     isActive(id: number): boolean {
-      return id === this.selectedId
+      return (this.selectedId !== undefined) && (id === this.selectedId)
     },
     isExpanded(id: number): boolean {
-      return id <= this.selectedId && (this.tree.parentIds.includes(id));
+      return (this.selectedId !== undefined) && id <= this.selectedId && (this.tree.parentIds.includes(id));
     }
   },
 })

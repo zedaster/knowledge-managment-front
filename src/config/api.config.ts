@@ -1,9 +1,11 @@
 const apiUrl = 'http://localhost:55555/'
 
 export default {
+    GET_ROOT_TREE: apiUrl,
     GET_SINGLE_ARTICLE: apiUrl + '',
     CREATE_ARTICLE: apiUrl + '',
     REGISTER: apiUrl + 'auth/registration',
     LOGIN: apiUrl + 'auth/login',
-    REFRESH_TOKEN: apiUrl + 'refreshToken'
+    REFRESH_TOKEN: apiUrl + 'refreshToken',
+    DELETE_ARTICLE: apiUrl + '',
 };

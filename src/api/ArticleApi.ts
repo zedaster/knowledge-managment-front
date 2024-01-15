@@ -4,11 +4,24 @@ import type {ArticleWithTreeDto} from "@/api/dto/ArticleWithTreeDto";
 import type {ArticleLink} from "@/models/article/ArticleLink";
 import type {Article} from "@/models/article/Article";
 import {SecureRequestManager} from "@/api/SecureRequestManager";
+import type {ArticleTree} from "@/models/article/ArticleTree";
 
 /**
  * API manager for articles
  */
 export class ArticleApi {
+
+    /**
+     * Request root tree of articles
+     */
+    public async getRootTree(): Promise<ArticleTree> {
+        const rootLinkArray = await new SecureRequestManager().get<ArticleLink[]>(config.GET_ROOT_TREE);
+        return {
+            linksByLevel: [rootLinkArray],
+            parentIds: []
+        };
+    }
+
     /**
      * Requests article (including tree) with a specific ID
      * @param id T
@@ -83,5 +96,13 @@ export class ArticleApi {
     public async getTitleByArticleId(id: number) {
         const article = await this.getArticleWithTreeById(id);
         return article.article.title;
+    }
+
+    /**
+     * Removes article with a specified ID
+     * @param id The specified id
+     */
+    public async removeById(id: number) {
+        await new SecureRequestManager().delete(config.DELETE_ARTICLE + id);
     }
 }

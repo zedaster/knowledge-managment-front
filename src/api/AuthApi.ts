@@ -79,7 +79,11 @@ export class AuthApi {
         }
     }
 
+    /**
+     * Refreshes access and refresh tokens
+     */
     public async refreshTokenPair() {
+        console.log('Refreshing tokens')
         const response = await axios.post<JwtTokenPair>(config.REFRESH_TOKEN, {
             token: localStorage.getItem(AuthApi.LS_KEY_REFRESH_TOKEN)
         }, {
@@ -92,6 +96,9 @@ export class AuthApi {
         }
     }
 
+    /**
+     * Checks is the user authorized
+     */
     public isAuthorized(): boolean {
         try {
             this.throwIfNotAuthorized()
@@ -102,6 +109,9 @@ export class AuthApi {
         return true;
     }
 
+    /**
+     * Returns name of the authorized user
+     */
     public getUsername() {
         this.throwIfNotAuthorized();
         const accessToken = localStorage.getItem(AuthApi.LS_KEY_ACCESS_TOKEN) as string;
@@ -111,5 +121,16 @@ export class AuthApi {
 
     private extractJwtData(jwtToken: string): any {
         return JSON.parse(atob(jwtToken.split('.')[1]));
+    }
+
+    /**
+     * Returns value for "Authorization" HTTP request header
+     */
+    public getAuthorizationHeader(): string | null {
+        const accessToken = localStorage.getItem(AuthApi.LS_KEY_ACCESS_TOKEN);
+        if (!accessToken) {
+            return null;
+        }
+        return "Bearer " + accessToken;
     }
 }

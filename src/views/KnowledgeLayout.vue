@@ -17,8 +17,7 @@ export default defineComponent({
       default: null,
     },
     selectedId: {
-      type: Object as PropType<number>,
-      default: 1
+      type: Object as PropType<number | undefined>
     }
   },
 })
