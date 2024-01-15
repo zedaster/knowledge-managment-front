@@ -14,18 +14,29 @@ export default defineComponent({
       api: new AuthApi(),
       registerDto: {
         login: '',
-        email: '',
+        // email: '',
         password: '',
         repeatPassword: ''
       } as RegisterDto,
       isFilled: false,
       isRegistering: false,
       tooltipText: 'Введите логин',
+      alertShown: false,
+      alertText: ''
     }
   },
 
   mounted() {
+    if (this.api.isAuthorized()) {
+      this.$router.push({name: 'home'});
+      return;
+    }
     this.updateTooltip()
+  },
+
+  beforeUnmount() {
+    const wrapper = this.$refs.registerButtonWrapper;
+    Tooltip.getOrCreateInstance(wrapper).dispose()
   },
 
   methods: {
@@ -38,6 +49,10 @@ export default defineComponent({
       this.api.register(this.registerDto).then(() => {
         this.isRegistering = false;
         this.openLoginPage();
+      }).catch(e => {
+        this.alertText = e;
+        this.alertShown = true;
+        this.isRegistering = false;
       })
     },
 
@@ -51,12 +66,13 @@ export default defineComponent({
   watch: {
     registerDto: {
       handler(newDto) {
+        // else if (newDto.email === '') {
+        //     this.isFilled = false;
+        //     this.tooltipText = 'Введите email'
+        //   }
         if (newDto.login === '') {
           this.isFilled = false;
           this.tooltipText = 'Введите логин';
-        } else if (newDto.email === '') {
-          this.isFilled = false;
-          this.tooltipText = 'Введите email'
         } else if (newDto.password === '') {
           this.isFilled = false;
           this.tooltipText = 'Введите пароль'
@@ -80,12 +96,16 @@ export default defineComponent({
 
 <template>
   <header>
-    <NavBar/>
+    <NavBar :hide-profile="true"/>
   </header>
   <main class="container h-100">
     <div class="row justify-content-center align-items-center">
       <div class="col-xl-4 col-lg-6 col-md-8 col-sm-12">
         <h1 class="mt-4 mb-4">Регистрация</h1>
+
+        <div class="alert alert-danger" role="alert" v-if="alertShown">
+          {{ this.alertText }}
+        </div>
 
         <!-- Login input -->
         <div class="mb-3">
@@ -98,14 +118,14 @@ export default defineComponent({
         </div>
 
         <!-- Email input -->
-        <div class="mb-3">
-          <label for="emailInput" class="form-label">Email</label>
-          <input type="email"
-                 class="form-control"
-                 id="emailInput"
-                 v-model="registerDto.email"
-                 placeholder="home@brusnika.com">
-        </div>
+        <!--        <div class="mb-3">-->
+        <!--          <label for="emailInput" class="form-label">Email</label>-->
+        <!--          <input type="email"-->
+        <!--                 class="form-control"-->
+        <!--                 id="emailInput"-->
+        <!--                 v-model="registerDto.email"-->
+        <!--                 placeholder="home@brusnika.com">-->
+        <!--        </div>-->
 
         <!-- Password input -->
         <div class="mb-4">
@@ -135,6 +155,7 @@ export default defineComponent({
         >
           <button type="button"
                   class="btn btn-dark btn-login mb-3"
+                  @click="register"
                   :disabled="!isFilled || isRegistering">
           <span>Зарегистрироваться</span>
         </button>

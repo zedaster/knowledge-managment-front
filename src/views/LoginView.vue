@@ -19,11 +19,22 @@ export default defineComponent({
       isFilled: false,
       isLoggingIn: false,
       tooltipText: 'Введите логин',
+      alertShown: false,
+      alertText: ''
     }
   },
 
   mounted() {
+    if (this.api.isAuthorized()) {
+      this.$router.push({name: 'home'});
+      return;
+    }
     this.updateTooltip()
+  },
+
+  beforeUnmount() {
+    const wrapper = this.$refs.loginButtonWrapper;
+    Tooltip.getOrCreateInstance(wrapper).dispose()
   },
 
   methods: {
@@ -35,6 +46,10 @@ export default defineComponent({
       this.api.login(this.loginDto).then(() => {
         this.isLoggingIn = false;
         this.$router.push({name: 'home'})
+      }).catch((e) => {
+        this.alertText = e
+        this.alertShown = true;
+        this.isLoggingIn = false;
       })
     },
 
@@ -48,6 +63,7 @@ export default defineComponent({
   watch: {
     loginDto: {
       handler(newDto) {
+        this.alertShown = false;
         if (newDto.login === '') {
           this.isFilled = false;
           this.tooltipText = 'Введите логин';
@@ -68,19 +84,22 @@ export default defineComponent({
 
 <template>
   <header>
-    <NavBar/>
+    <NavBar :hide-profile="true"/>
   </header>
   <main class="container h-100">
     <div class="row justify-content-center align-items-center h-100">
       <div class="col-xl-4 col-lg-6 col-md-8 col-sm-12">
         <h1 class="mt-4 mb-4">Вход в личный кабинет</h1>
+        <div class="alert alert-danger" role="alert" v-if="alertShown">
+          {{ this.alertText }}
+        </div>
         <div class="mb-3">
-          <label for="emailInput" class="form-label">Email</label>
-          <input type="email"
+          <label for="usernameInput" class="form-label">Логин</label>
+          <input type="text"
                  class="form-control"
-                 id="emailInput"
+                 id="usernameInput"
                  v-model="loginDto.username"
-                 placeholder="home@brusnika.com">
+                 placeholder="Login">
         </div>
         <div class="mb-4">
           <label for="passwordInput" class="form-label">Пароль</label>

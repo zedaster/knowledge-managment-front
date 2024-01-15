@@ -4,10 +4,16 @@
 export class LocalTokenService {
 
     /**
-     * Returns true if the local storage has a pair of tokens.
-     * It may return true if even the pair is invalid
+     * Throws error if there is no token
      */
-    public hasTokenPair(): boolean {
-        return false;
+    public throwIfNoToken() {
+
+    }
+
+    /**
+     * Refreshes tokens
+     */
+    public refreshTokenPair() {
+
     }
 }

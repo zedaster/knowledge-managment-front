@@ -4,9 +4,11 @@ import SiteButton from "@/components/SiteButton.vue";
 import ProfileIcon from "@/components/icons/ProfileIcon.vue";
 import SearchInput from "@/components/nav/SearchInput.vue";
 import {defineComponent} from "vue";
+import AssuranceModal from "@/components/modal/AssuranceModal.vue";
+import {AuthApi} from "@/api/AuthApi";
 
 export default defineComponent({
-  components: {SearchInput, SiteButton, ProfileIcon},
+  components: {AssuranceModal, SearchInput, SiteButton, ProfileIcon},
 
   props: {
     editMode: {
@@ -16,6 +18,16 @@ export default defineComponent({
     editButtonActive: {
       type: Boolean,
       default: true
+    },
+    hideProfile: {
+      type: Boolean,
+      default: false,
+    }
+  },
+
+  data() {
+    return {
+      exitModalShowing: false,
     }
   },
 
@@ -26,10 +38,17 @@ export default defineComponent({
       return !this.editMode
     },
     showProfileOptions() {
-      return !this.editMode
+      return !this.editMode && !this.hideProfile
     },
     showAddOptions() {
       return this.editMode
+    },
+    username() {
+      try {
+        return new AuthApi().getUsername();
+      } catch (e) {
+        this.$router.push({name: 'login'})
+      }
     }
   },
 
@@ -54,7 +73,15 @@ export default defineComponent({
     },
     save() {
       this.$emit('save');
+    },
+    leaveProfile() {
+      this.exitModalShowing = true;
+    },
+    sureLeaveProfile() {
+      new AuthApi().logout();
+      this.$router.push({name: 'login'})
     }
+
   }
 })
 </script>
@@ -65,25 +92,32 @@ export default defineComponent({
       <div class="row w-100 justify-content-between">
         <!-- Logo -->
         <div class="col col-auto">
-          <RouterLink :to="{name: 'home'}" class="navbar-brand" href="/">
+          <!--          <RouterLink :to="{name: 'home'}" class="navbar-brand" href="/">-->
+          <!--            <img src="../../assets/image/logo.svg" width="24" height="24" class="d-inline-block align-top"-->
+          <!--                 alt="Логотип Брусники">-->
+          <!--            <span class="navbar-title">База знаний</span>-->
+          <!--          </RouterLink>-->
+          <div class="navbar-brand">
             <img src="../../assets/image/logo.svg" width="24" height="24" class="d-inline-block align-top"
                  alt="Логотип Брусники">
             <span class="navbar-title">База знаний</span>
-          </RouterLink>
+          </div>
         </div>
 
         <!-- Search -->
-        <div v-if="showSearch" class="col col-6">
-          <SearchInput class="w-100"/>
-        </div>
+        <!--        <div v-if="showSearch" class="col col-6">-->
+        <!--          <SearchInput class="w-100"/>-->
+        <!--        </div>-->
 
         <!-- Auth Button and Profile Icon -->
         <div v-if="showProfileOptions" class="col col-auto">
-          <div class="d-flex">
-            <SiteButton><span class="mx-3">Вход</span></SiteButton>
-            <a href="#" class="ms-4">
+          <div class="d-flex align-items-center">
+            <!--            <SiteButton><span class="mx-3">Вход</span></SiteButton>-->
+
+            <a href="#" class="me-2" @click="leaveProfile">
               <ProfileIcon/>
             </a>
+            <span class="text-white">{{ this.username }}</span>
           </div>
         </div>
 
@@ -101,6 +135,15 @@ export default defineComponent({
       </div>
     </div>
   </nav>
+
+  <!-- Assurance Modal for log out -->
+  <AssuranceModal title="Выход"
+                  cancel-label="Отмена"
+                  sure-label="Выйти"
+                  @assure="sureLeaveProfile"
+                  v-model:showing="exitModalShowing">
+    <p>Вы действительно хотите выйти из системы?</p>
+  </AssuranceModal>
 </template>
 
 <style scoped>

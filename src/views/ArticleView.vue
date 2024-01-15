@@ -51,6 +51,8 @@ export default defineComponent({
       this.articleApi.getArticleWithTreeById(this.idToNumber).then((articleWithTree) => {
         this.article = articleWithTree.article;
         this.tree = articleWithTree.tree;
+      }).catch((e) => {
+        this.$router.push({name: 'login'})
       })
     }
   }

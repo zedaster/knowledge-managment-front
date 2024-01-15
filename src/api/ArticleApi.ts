@@ -1,9 +1,9 @@
 import type {ArticleWithTree} from "@/models/article/ArticleWithTree";
-import axios from "axios";
 import config from "@/config/api.config"
 import type {ArticleWithTreeDto} from "@/api/dto/ArticleWithTreeDto";
 import type {ArticleLink} from "@/models/article/ArticleLink";
 import type {Article} from "@/models/article/Article";
+import {SecureRequestManager} from "@/api/SecureRequestManager";
 
 /**
  * API manager for articles
@@ -15,15 +15,8 @@ export class ArticleApi {
      */
     public async getArticleWithTreeById(id: number): Promise<ArticleWithTree> {
         const url = config.GET_SINGLE_ARTICLE + id;
-        const response = await axios.get<ArticleWithTreeDto[]>(url, {
-            auth: {
-                username: 'richie',
-                password: '123'
-            },
-            withCredentials: true,
-        });
-        return this.mapToArticleWithTree(response.data, id);
-        // TODO
+        const response = await new SecureRequestManager().get<ArticleWithTreeDto[]>(url)
+        return this.mapToArticleWithTree(response, id);
     }
 
     /**
@@ -75,17 +68,11 @@ export class ArticleApi {
      * @param newArticle params for the new article
      */
     public async createArticle(newArticle: { title: string; content: string; parentId: number | null }) {
-        await axios.post(config.CREATE_ARTICLE, {
+        await new SecureRequestManager().post(config.CREATE_ARTICLE, {
             title: newArticle.title,
             content: newArticle.content,
             articleParentId: newArticle.parentId,
             author: 'Sergey' // TODO: Убрать
-        }, {
-            auth: {
-                username: 'richie',
-                password: '123'
-            },
-            withCredentials: true,
         });
     }
 

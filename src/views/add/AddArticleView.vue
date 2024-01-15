@@ -78,6 +78,8 @@ export default defineComponent({
         parentId: this.parentIdToNumber
       }).then(() => {
         this.$router.go(-1);
+      }).catch((e) => {
+        this.$router.push({name: 'login'})
       });
     },
 

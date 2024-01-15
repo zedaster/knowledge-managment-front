@@ -1,12 +1,115 @@
 import type {RegisterDto} from "@/api/dto/RegisterDto";
 import type {LoginDto} from "@/api/dto/LoginDto";
+import axios from "axios";
+import config from "@/config/api.config"
+import type {JwtTokenPair} from "@/models/JwtTokenPair";
 
 export class AuthApi {
+    /**
+     * Key for access token in local storage
+     * @private
+     */
+    private static readonly LS_KEY_ACCESS_TOKEN = "ACCESS_TOKEN"
+
+    /**
+     * Key for refresh token in local storage
+     * @private
+     */
+    private static readonly LS_KEY_REFRESH_TOKEN = "REFRESH_TOKEN"
+
     public async register(data: RegisterDto) {
-        // TODO
+        try {
+            await axios.post<string>(config.REGISTER, {
+                username: data.login,
+                password: data.password
+            }, {
+                withCredentials: false,
+            });
+        } catch (e: any) {
+            if (e.response.status == 400) {
+                throw e.response.data;
+            }
+            console.error('Wrong register response!')
+        }
+
+
     }
 
-    public async login(loginDto: LoginDto) {
-        // TODO
+    public async login(data: LoginDto) {
+        try {
+            const response = await axios.post<JwtTokenPair | string>(
+                config.LOGIN,
+                data, {
+                    withCredentials: false,
+                });
+
+            const tokenPair = response.data as JwtTokenPair;
+            localStorage.setItem(AuthApi.LS_KEY_ACCESS_TOKEN, tokenPair.accessToken)
+            localStorage.setItem(AuthApi.LS_KEY_REFRESH_TOKEN, tokenPair.token)
+        } catch (e: any) {
+            if (e.response.status == 400) {
+                throw e.response.data as string;
+            }
+
+            if (e.response.status == 401) {
+                throw "Данные введены неверно!"
+            }
+
+            console.error('Wrong login response!')
+        }
+    }
+
+    /**
+     * Logs out the user
+     */
+    public logout() {
+        localStorage.removeItem(AuthApi.LS_KEY_ACCESS_TOKEN);
+        localStorage.removeItem(AuthApi.LS_KEY_REFRESH_TOKEN);
+    }
+
+    /**
+     * Throws an error if the user is unauthorized
+     */
+    public throwIfNotAuthorized() {
+        const accessToken = localStorage.getItem(AuthApi.LS_KEY_ACCESS_TOKEN);
+        const refreshToken = localStorage.getItem(AuthApi.LS_KEY_REFRESH_TOKEN);
+
+        if (!accessToken || !refreshToken) {
+            throw "Unauthorized"
+        }
+    }
+
+    public async refreshTokenPair() {
+        const response = await axios.post<JwtTokenPair>(config.REFRESH_TOKEN, {
+            token: localStorage.getItem(AuthApi.LS_KEY_REFRESH_TOKEN)
+        }, {
+            withCredentials: true,
+        });
+
+        if (response.status == 200) {
+            localStorage.setItem(AuthApi.LS_KEY_ACCESS_TOKEN, response.data.accessToken)
+            localStorage.setItem(AuthApi.LS_KEY_REFRESH_TOKEN, response.data.token)
+        }
+    }
+
+    public isAuthorized(): boolean {
+        try {
+            this.throwIfNotAuthorized()
+        } catch (e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public getUsername() {
+        this.throwIfNotAuthorized();
+        const accessToken = localStorage.getItem(AuthApi.LS_KEY_ACCESS_TOKEN) as string;
+        const payload = this.extractJwtData(accessToken);
+        return payload.sub
+    }
+
+    private extractJwtData(jwtToken: string): any {
+        return JSON.parse(atob(jwtToken.split('.')[1]));
     }
 }

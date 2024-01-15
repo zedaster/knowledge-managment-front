@@ -1,6 +1,6 @@
 export interface RegisterDto {
     login: string;
-    email: string
+    // email: string
     password: string;
     repeatPassword: string;
 }
