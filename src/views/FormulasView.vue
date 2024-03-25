@@ -42,7 +42,7 @@ export default defineComponent({
       this.editApi.updateFormula(newFormula);
     },
 
-    isFormulaSelectorShowing() {
+    addFormula() {
       this.isAdding = true;
       this.editApi.addStandardFormula().then((newFormula) => {
         this.formulas.push(newFormula);
@@ -54,7 +54,7 @@ export default defineComponent({
       this.editApi.removeFormula(id).then(() => {
         this.formulas = this.formulas.filter((formula) => formula.id !== id);
       })
-    }
+    },
   },
 })
 </script>
