@@ -4,6 +4,10 @@ import {ComputeEngine} from "@cortex-js/compute-engine";
  * Class that works with variables in dependencies of a specific formula
  */
 export class DependencyVariablesService {
+    /**
+     * Engine that parses variables and other data from a raw formula
+     * @private
+     */
     private readonly computeEngine: ComputeEngine;
 
     constructor() {
@@ -75,7 +79,7 @@ export class DependencyVariablesService {
         if (expression.json.length > 2 && expression.json[0] === "Equal" && expression.json[1] === freeVariables[0]) {
             result.delete(freeVariables[0]);
         }
-        console.log(`Extracted vars are ${JSON.stringify(result)}`)
+        //console.log(`Extracted vars are ${JSON.stringify(result)}`)
         return result;
     }
 }

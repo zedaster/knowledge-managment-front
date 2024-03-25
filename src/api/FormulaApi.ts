@@ -1,11 +1,11 @@
 import type Formula from "@/models/formula/Formula";
-import {LocalTokenService} from "@/service/LocalTokenService";
+import {AuthApi} from "@/api/AuthApi";
 
 /**
  * API manager for formulas
  */
 export class FormulaApi {
-    private readonly authApi = new LocalTokenService();
+    private readonly authApi = new AuthApi();
 
     private static readonly defaultFormulas: Formula[] = [
         {
@@ -44,7 +44,7 @@ export class FormulaApi {
      * Requests all formulas
      */
     public async getAll(): Promise<Array<Formula>> {
-        this.authApi.throwIfNoToken();
+        this.authApi.throwIfNotAuthorized();
         return new Promise((resolve) => resolve(this.getLocalFormulas()));
     }
 
@@ -52,7 +52,7 @@ export class FormulaApi {
      * Requests all formulas as map of id => formula
      */
     public async getAllAsMap(): Promise<Map<number, Formula>> {
-        this.authApi.throwIfNoToken();
+        this.authApi.throwIfNotAuthorized();
         const allFormulas = await this.getAll();
         const map = new Map<number, Formula>();
         for (const formula of allFormulas) {
@@ -66,7 +66,7 @@ export class FormulaApi {
      * @param id
      */
     public async getOneById(id: number): Promise<Formula | undefined> {
-        this.authApi.throwIfNoToken();
+        this.authApi.throwIfNotAuthorized();
         return this.getLocalFormulas().find((f) => f.id == id);
     }
 
@@ -75,7 +75,7 @@ export class FormulaApi {
      * @param newFormula formula object with updated properties.
      */
     public async updateFormula(newFormula: Formula): Promise<void> {
-        this.authApi.throwIfNoToken();
+        this.authApi.throwIfNotAuthorized();
         const formulas = this.getLocalFormulas();
         for (const i in formulas) {
             const formula = formulas[i];
@@ -93,7 +93,7 @@ export class FormulaApi {
      * Creates new formula using a standard template and returns value of the new formula
      */
     public async addStandardFormula(): Promise<Formula> {
-        this.authApi.throwIfNoToken();
+        this.authApi.throwIfNotAuthorized();
         const formulas = this.getLocalFormulas();
         const maxId = this.findMaxId(formulas)
         const newFormula: Formula = {
@@ -113,7 +113,7 @@ export class FormulaApi {
      * @param id The specified id
      */
     public async removeFormula(id: number): Promise<void> {
-        this.authApi.throwIfNoToken();
+        this.authApi.throwIfNotAuthorized();
         const formulas = this.getLocalFormulas();
         const newFormulas = formulas.filter((f) => f.id !== id);
         this.saveLocalFormulas(newFormulas);

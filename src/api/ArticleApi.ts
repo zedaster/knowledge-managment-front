@@ -89,10 +89,6 @@ export class ArticleApi {
         });
     }
 
-    public async updateArticle(updateContent: { title: string; content: string; }) {
-        // TODO
-    }
-
     public async getTitleByArticleId(id: number) {
         const article = await this.getArticleWithTreeById(id);
         return article.article.title;

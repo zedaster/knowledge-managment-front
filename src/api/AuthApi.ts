@@ -4,6 +4,9 @@ import axios from "axios";
 import config from "@/config/api.config"
 import type {JwtTokenPair} from "@/models/JwtTokenPair";
 
+/**
+ * The class is responsible for operations with authorization and tokens
+ */
 export class AuthApi {
     /**
      * Key for access token in local storage
@@ -117,6 +120,11 @@ export class AuthApi {
         return payload.sub
     }
 
+    /**
+     * Returns payload from a JWT token
+     * @param jwtToken the token
+     * @private
+     */
     private extractJwtData(jwtToken: string): any {
         return JSON.parse(atob(jwtToken.split('.')[1]));
     }

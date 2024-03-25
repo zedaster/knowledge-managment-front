@@ -140,7 +140,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <p class="text-muted" v-if="parentTitle === null">Статья в корневой ветку</p>
+  <p class="text-muted" v-if="parentTitle === null">Статья в корневой ветке</p>
   <p class="text-muted" v-if="typeof parentTitle === 'string'">Родительская статья: <b>{{ parentTitle }}</b></p>
 
   <h1 ref="title" @input="inputTitle" contenteditable="true">Заголовок</h1>

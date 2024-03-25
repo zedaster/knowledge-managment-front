@@ -3,9 +3,13 @@ import axios from "axios";
 import {AuthApi} from "@/api/AuthApi";
 
 /**
- * Produces secure HTTP requests
+ * Produces secure HTTP requests (with tokens from {@link AuthApi})
  */
 export class SecureRequestManager {
+    /**
+     * Instance of {@link AuthApi}
+     * @private
+     */
     private readonly authApi = new AuthApi();
 
     /**
@@ -56,8 +60,15 @@ export class SecureRequestManager {
         );
     }
 
+    /**
+     * Produces a secure request
+     * @param requestProducer a function that produces a target Axios request
+     * @param tokensRefreshed Internal param for recursion. If tokens are refreshed, and it's not possible to connect,
+     * then the method produces logging out and rejecting.
+     * @private
+     */
     private async produceSecureRequest<T>(requestProducer: () => Promise<AxiosResponse<T>>,
-                                          refreshed = false): Promise<AxiosResponse<T, any>> {
+                                          tokensRefreshed = false): Promise<AxiosResponse<T, any>> {
         this.authApi.throwIfNotAuthorized();
 
         return new Promise((resolve, reject) => {
@@ -66,7 +77,7 @@ export class SecureRequestManager {
                     resolve(r)
                 })
                 .catch(async (e) => {
-                    if (!refreshed) {
+                    if (!tokensRefreshed) {
                         try {
                             await this.authApi.refreshTokenPair();
                         } catch (e) {
