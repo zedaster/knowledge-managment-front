@@ -6,6 +6,9 @@ import {AuthApi} from "@/api/AuthApi";
 import type {LoginDto} from "@/api/dto/LoginDto";
 import {Tooltip} from "bootstrap";
 
+/**
+ * Login view
+ */
 export default defineComponent({
   components: {NavBar},
 

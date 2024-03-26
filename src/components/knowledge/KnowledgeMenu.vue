@@ -10,6 +10,9 @@ import {ArticleTree} from "@/models/article/ArticleTree";
 import FormulaMenuIcon from "@/components/icons/FormulaMenuIcon.vue";
 import router from "@/router";
 
+/**
+ * Menu on the left side of {@link KnowledgeLayout}
+ */
 export default defineComponent({
   components: {ArticlesMenuIcon, HomeMenuIcon, AddButton, PlusIcon, ArticleMenu, MenuArrowIcon},
 

@@ -7,7 +7,7 @@ import KnowledgeContainer from "@/components/knowledge/KnowledgeContainer.vue";
 
 /**
  * Layout for primary pages of the project. It contains two columns. The left one is {@link KnowledgeMenu} and the
- * right one contains the child HTML of the component
+ * right one contains the child HTML of the component wrapped into {@link KnowledgeContainer}
  */
 export default defineComponent({
   components: {KnowledgeContainer, KnowledgeMenu},

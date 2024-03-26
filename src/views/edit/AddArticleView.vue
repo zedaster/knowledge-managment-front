@@ -12,12 +12,13 @@ import Formula from "@/models/formula/Formula";
 import FormulaRow from "@/components/knowledge/formula/FormulaRow.vue";
 import FormulaContainer from "@/components/knowledge/formula/FormulaContainer.vue";
 import TextIcon from "@/components/icons/TextIcon.vue";
-import type {FormulaAddElement, TextAddElement} from "@/service/edit/AddElement";
 import RemoveIcon from "@/components/icons/RemoveIcon.vue";
 import HandIndexIcon from "@/components/icons/HandIndexIcon.vue";
 import ArticleEditor from "@/components/knowledge/edit/ArticleEditor.vue";
-import {EditorService} from "@/service/edit/EditorService";
 
+/**
+ * Page for creating a new article
+ */
 export default defineComponent({
   components: {
     ArticleEditor,
@@ -40,7 +41,16 @@ export default defineComponent({
       parentTitle: null as string | null,
 
       title: 'Заголовок',
-      contents: [{text: "Новый текст"}] as (TextAddElement | FormulaAddElement)[],
+      content: {
+        blocks: [
+          {
+            type: "paragraph",
+            data: {
+              text: "Новый текст"
+            }
+          }
+        ]
+      } as any,
 
       isFormulaSelectorShowing: false,
       selectedFormulaId: null as null | number,
@@ -78,7 +88,7 @@ export default defineComponent({
       this.isSaveButtonActive = false;
       this.editApi.createArticle({
         title: new SpaceCleanService().trimAndFormatMultiSpaces(this.title),
-        content: new EditorService().compileContent(this.contents),
+        content: JSON.stringify(this.content),
         parentId: this.parentIdToNumber
       }).then(() => {
         this.$router.go(-1);
@@ -95,19 +105,23 @@ export default defineComponent({
     <NavBar :editMode="true" @save="save"/>
   </header>
   <main class="h-100">
-    <div class="container h-100">
-      <KnowledgeContainer class="d-flex flex-column py-4 px-5">
-        <div v-if="isLoading" class="d-flex justify-content-center">
-          <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
+    <div class="container-fluid h-100">
+      <div class="row h-100 justify-content-center">
+        <div class="col container-wrapper">
+          <KnowledgeContainer class="d-flex flex-column py-4 px-4">
+            <div v-if="isLoading" class="d-flex justify-content-center">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
 
-        <ArticleEditor v-if="!isLoading"
-                       :parent-title="parentTitle"
-                       v-model:title="title"
-                       v-model:contents="contents"/>
-      </KnowledgeContainer>
+            <ArticleEditor v-if="!isLoading"
+                           :parent-title="parentTitle"
+                           v-model:title="title"
+                           v-model:content="content"/>
+          </KnowledgeContainer>
+        </div>
+      </div>
     </div>
 
   </main>
@@ -116,5 +130,9 @@ export default defineComponent({
 <style scoped>
 main {
   margin-top: 30px;
+}
+
+.container-wrapper {
+  max-width: 800px;
 }
 </style>

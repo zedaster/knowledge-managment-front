@@ -3,6 +3,9 @@ import {defineComponent} from "vue";
 import KnowledgeLayout from "@/views/KnowledgeLayout.vue";
 import NavBar from "@/components/nav/NavBar.vue";
 
+/**
+ * Home page. It opens when an authorized user opens the root path
+ */
 export default defineComponent({
   components: {NavBar, KnowledgeLayout}
 })

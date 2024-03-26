@@ -1,5 +1,10 @@
-<script setup lang="ts">
+<script lang="ts">
+import {defineComponent} from "vue";
 
+/**
+ * Container with smooth corners filled with block background color. Use it to show some content on a page
+ */
+export default defineComponent({})
 </script>
 
 <template>

@@ -6,13 +6,17 @@ import {ArticleApi} from "@/api/ArticleApi";
 import type {Article} from "@/models/article/Article";
 import NavBar from "@/components/nav/NavBar.vue";
 import type {ArticleTree} from "@/models/article/ArticleTree";
-import RenderedArticleContent from "@/components/knowledge/RenderedArticleContent.vue";
 import EditIcon from "@/components/icons/EditIcon.vue";
 import RemoveIcon from "@/components/icons/RemoveIcon.vue";
 import AssuranceModal from "@/components/modal/AssuranceModal.vue";
+import ArticleContent from "@/components/knowledge/ArticleContent.vue";
+import ArticleHead from "@/components/knowledge/head/ArticleHead.vue";
 
+/**
+ * Page of a specific article
+ */
 export default defineComponent({
-  components: {AssuranceModal, RemoveIcon, EditIcon, RenderedArticleContent, NavBar, KnowledgeLayout},
+  components: {ArticleHead, ArticleContent, AssuranceModal, RemoveIcon, EditIcon, NavBar, KnowledgeLayout},
   props: {
     id: {
       type: Object as PropType<string | undefined>,
@@ -124,17 +128,20 @@ export default defineComponent({
     </div>
 
     <div v-if="article !== undefined" class="article-content">
-      <div class="row" @mouseover="onTitleMouseOver" @mouseleave="onTitleMouseLeave">
-        <div class="col-12 d-flex flex-row mb-2">
-          <h1 class="me-2">{{ this.article.title }}</h1>
-          <div class="d-flex align-items-center gap-1" v-if="isEditIconShown">
-            <EditIcon class="edit-icon" @click="edit"/>
-            <RemoveIcon class="edit-icon" @click="remove"/>
+      <ArticleHead>
+        <div class="row" @mouseover="onTitleMouseOver" @mouseleave="onTitleMouseLeave">
+          <div class="col-12 d-flex flex-row mb-2">
+            <h1 class="me-2">{{ this.article.title }}</h1>
+            <div class="d-flex align-items-center gap-1" v-if="isEditIconShown">
+              <EditIcon class="edit-icon" @click="edit"/>
+              <RemoveIcon class="edit-icon" @click="remove"/>
+            </div>
           </div>
         </div>
-      </div>
+      </ArticleHead>
 
-      <RenderedArticleContent :html="this.article.content"/>
+
+      <ArticleContent :content="JSON.parse(this.article.content)"/>
 
       <!-- Assurance Modal for removing article -->
       <AssuranceModal title="Удаление"

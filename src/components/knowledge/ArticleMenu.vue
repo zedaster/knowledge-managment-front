@@ -5,6 +5,9 @@ import type {PropType} from "vue";
 import {defineComponent} from "vue";
 import type {ArticleTree} from "@/models/article/ArticleTree";
 
+/**
+ * Submenu for {@link KnowledgeMenu} to show the tree of articles
+ */
 export default defineComponent({
   components: {MenuArrowIcon},
   props: {

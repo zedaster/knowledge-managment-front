@@ -6,6 +6,9 @@ import {AuthApi} from "@/api/AuthApi";
 import {Tooltip} from "bootstrap";
 import type {RegisterDto} from "@/api/dto/RegisterDto";
 
+/**
+ * Register view
+ */
 export default defineComponent({
   components: {NavBar},
 

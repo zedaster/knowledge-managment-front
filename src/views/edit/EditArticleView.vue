@@ -3,12 +3,13 @@ import {defineComponent} from "vue";
 import ArticleEditor from "@/components/knowledge/edit/ArticleEditor.vue";
 import KnowledgeContainer from "@/components/knowledge/KnowledgeContainer.vue";
 import {EditArticleApi} from "@/api/EditArticleApi";
-import type {FormulaAddElement, TextAddElement} from "@/service/edit/AddElement";
-import {EditorService} from "@/service/edit/EditorService";
 import type {ArticleVersion} from "@/models/edit/ArticleVersion";
 import ArticleVersionSelector from "@/components/knowledge/edit/ArticleVersionSelector.vue";
 import NavBar from "@/components/nav/NavBar.vue";
 
+/**
+ * Page for editing an existent article
+ */
 export default defineComponent({
   components: {NavBar, ArticleVersionSelector, KnowledgeContainer, ArticleEditor},
 
@@ -25,9 +26,9 @@ export default defineComponent({
       isArticleLoading: true,
       isVersionsLoading: true,
       title: null as null | string,
-      contents: null as null | (TextAddElement | FormulaAddElement)[],
+      content: null as null | any,
       initialTitle: null as null | string,
-      initialContents: null as null | (TextAddElement | FormulaAddElement)[],
+      initialContent: null as null | any,
       versions: null as null | ArticleVersion[],
       currentVersion: null as null | number
     }
@@ -41,10 +42,8 @@ export default defineComponent({
 
   mounted() {
     this.editApi.getEditData(this.idToNumber).then((data) => {
-      console.log(data)
-      console.log(new EditorService().decompileContent(data.content))
       this.title = data.title;
-      this.contents = new EditorService().decompileContent(data.content);
+      this.content = JSON.parse(data.content);
       this.versions = data.versions;
       this.currentVersion = data.currentVersion;
       this.isVersionsLoading = false;
@@ -62,7 +61,7 @@ export default defineComponent({
         articleId: this.idToNumber,
         versionId: this.currentVersion as number,
         title: this.title as string,
-        content: new EditorService().compileContent(this.contents as (TextAddElement | FormulaAddElement)[])
+        content: JSON.stringify(this.content),
       }).then(() => {
         this.$router.push({name: 'article', params: {id: this.id}})
       }).catch((e) => {
@@ -76,7 +75,7 @@ export default defineComponent({
       this.isArticleLoading = true;
       this.editApi.getCertainVersion(newVersion).then((data) => {
         this.title = data.title;
-        this.contents = new EditorService().decompileContent(data.content);
+        this.content = JSON.parse(data.content);
         this.isArticleLoading = false;
       }).catch((e) => {
         this.$router.push({name: 'login'})
@@ -95,11 +94,11 @@ export default defineComponent({
       <KnowledgeContainer class="d-flex flex-column py-4 px-5">
         <ArticleVersionSelector v-if="!isVersionsLoading"
                                 v-model:currentVersion="currentVersion as number"
-                                :versions="versions"/>
+                                :versions="versions!"/>
 
         <ArticleEditor v-if="!isArticleLoading"
                        v-model:title="title as string"
-                       v-model:contents="contents"/>
+                       v-model:content="content"/>
 
         <div v-if="isArticleLoading" class="d-flex justify-content-center">
           <div class="spinner-border" role="status">
