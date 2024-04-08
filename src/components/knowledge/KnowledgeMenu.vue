@@ -1,8 +1,6 @@
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import MenuArrowIcon from "@/components/icons/MenuArrowIcon.vue";
 import ArticleMenu from "@/components/knowledge/ArticleMenu.vue";
-import PlusIcon from "@/components/icons/PlusIcon.vue";
 import AddButton from "@/components/knowledge/AddButton.vue";
 import HomeMenuIcon from "@/components/icons/HomeMenuIcon.vue";
 import ArticlesMenuIcon from "@/components/icons/ArticlesMenuIcon.vue";
@@ -14,7 +12,7 @@ import router from "@/router";
  * Menu on the left side of {@link KnowledgeLayout}
  */
 export default defineComponent({
-  components: {ArticlesMenuIcon, HomeMenuIcon, AddButton, PlusIcon, ArticleMenu, MenuArrowIcon},
+  components: {ArticlesMenuIcon, HomeMenuIcon, AddButton, ArticleMenu},
 
   props: {
     tree: {

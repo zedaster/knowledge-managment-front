@@ -35,7 +35,7 @@ h3 {
   line-height: 24px; /* 133.333% */
 }
 
-p, li, span {
+p, li, span, .ce-paragraph {
   font-family: Grtsk Exa, Roboto, sans-serif;
   font-size: 14px;
   font-style: normal;

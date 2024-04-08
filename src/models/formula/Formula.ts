@@ -1,3 +1,6 @@
+/**
+ * Model of a formula
+ */
 export default interface Formula {
     id: number,
     title: string

@@ -1,5 +1,4 @@
-// TODO: Перенести адреса в dotenv
-const apiUrl = 'https://backend-richie.kexogg.ru/'
+const apiUrl = 'http://localhost:55555/'
 
 export default {
     GET_ROOT_TREE: apiUrl,

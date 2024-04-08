@@ -49,25 +49,27 @@ export class FormulaApi {
     }
 
     /**
-     * Requests all formulas as map of id => formula
-     */
-    public async getAllAsMap(): Promise<Map<number, Formula>> {
-        this.authApi.throwIfNotAuthorized();
-        const allFormulas = await this.getAll();
-        const map = new Map<number, Formula>();
-        for (const formula of allFormulas) {
-            map.set(formula.id, formula);
-        }
-        return map;
-    }
-
-    /**
      * Request formula
      * @param id
      */
     public async getOneById(id: number): Promise<Formula | undefined> {
         this.authApi.throwIfNotAuthorized();
         return this.getLocalFormulas().find((f) => f.id == id);
+    }
+
+    /**
+     * Requests map of id and titles of all formulas
+     */
+    public async getTitleMap(): Promise<Map<number, string>> {
+        this.authApi.throwIfNotAuthorized()
+
+        await new Promise(resolve => setTimeout(resolve, 500))
+        const allFormulas = await this.getAll();
+        const map = new Map<number, string>();
+        for (const formula of allFormulas) {
+            map.set(formula.id, formula.title);
+        }
+        return map;
     }
 
     /**

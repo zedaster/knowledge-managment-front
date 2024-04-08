@@ -6,12 +6,13 @@ import {EditArticleApi} from "@/api/EditArticleApi";
 import type {ArticleVersion} from "@/models/edit/ArticleVersion";
 import ArticleVersionSelector from "@/components/knowledge/edit/ArticleVersionSelector.vue";
 import NavBar from "@/components/nav/NavBar.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
 
 /**
  * Page for editing an existent article
  */
 export default defineComponent({
-  components: {NavBar, ArticleVersionSelector, KnowledgeContainer, ArticleEditor},
+  components: {LoadingSpinner, NavBar, ArticleVersionSelector, KnowledgeContainer, ArticleEditor},
 
   props: {
     id: {
@@ -101,9 +102,7 @@ export default defineComponent({
                        v-model:content="content"/>
 
         <div v-if="isArticleLoading" class="d-flex justify-content-center">
-          <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
+          <LoadingSpinner/>
         </div>
 
       </KnowledgeContainer>

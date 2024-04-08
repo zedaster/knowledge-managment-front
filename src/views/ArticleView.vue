@@ -11,12 +11,22 @@ import RemoveIcon from "@/components/icons/RemoveIcon.vue";
 import AssuranceModal from "@/components/modal/AssuranceModal.vue";
 import ArticleContent from "@/components/knowledge/ArticleContent.vue";
 import ArticleHead from "@/components/knowledge/head/ArticleHead.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
 
 /**
  * Page of a specific article
  */
 export default defineComponent({
-  components: {ArticleHead, ArticleContent, AssuranceModal, RemoveIcon, EditIcon, NavBar, KnowledgeLayout},
+  components: {
+    LoadingSpinner,
+    ArticleHead,
+    ArticleContent,
+    AssuranceModal,
+    RemoveIcon,
+    EditIcon,
+    NavBar,
+    KnowledgeLayout
+  },
   props: {
     id: {
       type: Object as PropType<string | undefined>,
@@ -122,9 +132,7 @@ export default defineComponent({
   </header>
   <KnowledgeLayout :selected-id="this.idToNumber" :tree="tree">
     <div v-if="isLoading" class="d-flex justify-content-center">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
+      <LoadingSpinner/>
     </div>
 
     <div v-if="article !== undefined" class="article-content">

@@ -8,12 +8,13 @@ import type Formula from "@/models/formula/Formula";
 import {DependencyOptionsService} from "@/service/formula/DependencyOptionsService";
 import AddButton from "@/components/knowledge/AddButton.vue";
 import NavBar from "@/components/nav/NavBar.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
 
 /**
  * Page to manage formulas
  */
 export default defineComponent({
-  components: {NavBar, AddButton, FormulaRow, KnowledgeLayout},
+  components: {LoadingSpinner, NavBar, AddButton, FormulaRow, KnowledgeLayout},
 
   data() {
     return {
@@ -67,7 +68,7 @@ export default defineComponent({
     <h1>Формулы</h1>
     <br>
     <div v-if="!isLoaded">
-      <p>Loading...</p>
+      <LoadingSpinner/>
     </div>
     <div v-if="isLoaded" class="row row-cols-1 gy-3">
       <FormulaRow v-for="formula in this.formulas"

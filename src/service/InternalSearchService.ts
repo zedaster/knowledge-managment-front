@@ -1,5 +1,5 @@
 /**
- * Service to search in collections inside current platform (Web JS)
+ * Service to search in collections using current platform (Web JS)
  */
 export class InternalSearchService {
 

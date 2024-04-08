@@ -5,27 +5,21 @@ import KnowledgeContainer from "@/components/knowledge/KnowledgeContainer.vue";
 import NavBar from "@/components/nav/NavBar.vue";
 import {ArticleApi} from "@/api/ArticleApi";
 import {SpaceCleanService} from "@/service/SpaceCleanService";
-import PlusIcon from "@/components/icons/PlusIcon.vue";
-import FormulaIcon from "@/components/icons/FormulaIcon.vue";
 import FormulaSelector from "@/components/knowledge/formula/FormulaSelector.vue";
 import Formula from "@/models/formula/Formula";
-import FormulaRow from "@/components/knowledge/formula/FormulaRow.vue";
-import FormulaContainer from "@/components/knowledge/formula/FormulaContainer.vue";
-import TextIcon from "@/components/icons/TextIcon.vue";
-import RemoveIcon from "@/components/icons/RemoveIcon.vue";
-import HandIndexIcon from "@/components/icons/HandIndexIcon.vue";
 import ArticleEditor from "@/components/knowledge/edit/ArticleEditor.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
 
 /**
  * Page for creating a new article
  */
 export default defineComponent({
   components: {
+    LoadingSpinner,
     ArticleEditor,
-    HandIndexIcon,
-    RemoveIcon,
-    TextIcon,
-    FormulaContainer, FormulaRow, FormulaSelector, FormulaIcon, PlusIcon, NavBar, KnowledgeContainer
+    FormulaSelector,
+    NavBar,
+    KnowledgeContainer,
   },
 
   props: {
@@ -110,9 +104,7 @@ export default defineComponent({
         <div class="col container-wrapper">
           <KnowledgeContainer class="d-flex flex-column py-4 px-4">
             <div v-if="isLoading" class="d-flex justify-content-center">
-              <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
-              </div>
+              <LoadingSpinner/>
             </div>
 
             <ArticleEditor v-if="!isLoading"

@@ -1,6 +1,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import EditorJS from '@editorjs/editorjs';
+import {FormulaBlock} from "@/editor-plugins/formula/FormulaBlock";
 
 /**
  * Component to show or edit content of a specific article
@@ -32,7 +33,9 @@ export default defineComponent({
        */
       holder: 'editorjs',
 
-      tools: {},
+      tools: {
+        formula: FormulaBlock
+      },
 
       data: this.content,
 
