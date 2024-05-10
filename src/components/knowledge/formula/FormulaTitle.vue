@@ -20,6 +20,14 @@ export default defineComponent({
     modelValue: {
       type: String,
       required: true,
+    },
+
+    /**
+     * Possibility to edit the title
+     */
+    editable: {
+      type: Boolean,
+      required: true,
     }
   },
 
@@ -97,7 +105,7 @@ export default defineComponent({
       >
         {{ this.currentTitle }}
       </h2>
-      <div class="d-flex align-items-center gap-1" v-if="this.isEditIconShown && !isEditing">
+      <div class="d-flex align-items-center gap-1" v-if="this.editable && this.isEditIconShown && !isEditing">
         <EditIcon class="edit-icon" @click="startEditing"/>
         <RemoveIcon class="edit-icon" @click="remove"/>
       </div>

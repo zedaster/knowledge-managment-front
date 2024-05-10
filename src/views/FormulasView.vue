@@ -9,6 +9,7 @@ import {DependencyOptionsService} from "@/service/formula/DependencyOptionsServi
 import AddButton from "@/components/knowledge/AddButton.vue";
 import NavBar from "@/components/nav/NavBar.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import {useUserStore} from "@/store/UserStore";
 
 /**
  * Page to manage formulas
@@ -19,6 +20,8 @@ export default defineComponent({
   data() {
     return {
       editApi: new FormulaApi(),
+      userStorage: useUserStore(),
+
       isLoaded: false,
       formulas: new Array<Formula>(),
       isAdding: false
@@ -30,6 +33,12 @@ export default defineComponent({
       this.formulas = formulas;
       this.isLoaded = true;
     });
+  },
+
+  computed: {
+    canUserEdit() {
+      return this.userStorage.canEdit();
+    }
   },
 
   methods: {
@@ -69,15 +78,23 @@ export default defineComponent({
       <LoadingSpinner/>
     </div>
     <div v-if="isLoaded" class="row row-cols-1 gy-3">
-      <FormulaRow v-for="formula in this.formulas"
+      <FormulaRow v-if="canUserEdit"
+                  v-for="formula in this.formulas"
                   :formula="formula"
+                  :is-editable="true"
                   @update="updateFormula"
                   @remove="() => removeFormula(formula.id)"
                   :dependency-options="getDependencyOptions(formula)">
       </FormulaRow>
+      <FormulaRow v-else
+                  v-for="formula in this.formulas"
+                  :formula="formula"
+                  :dependency-options="getDependencyOptions(formula)"
+                  :is-editable="false">
+      </FormulaRow>
     </div>
     <br/>
-    <div class="row justify-content-center">
+    <div v-if="canUserEdit" class="row justify-content-center">
       <div class="col col-auto">
         <AddButton @click="addFormula" :disabled="isAdding">Добавить формулу</AddButton>
       </div>

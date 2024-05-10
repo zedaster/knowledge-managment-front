@@ -28,7 +28,7 @@ export default defineComponent({
      */
     possibleVariables: {
       type: Array<String>,
-      required: true
+      default: null,
     },
 
     /**
@@ -36,8 +36,16 @@ export default defineComponent({
      */
     dependencyOptions: {
       type: Object as PropType<Array<Formula>>,
-      required: true
+      required: true,
     },
+
+    /**
+     * Possibility to edit the dependencies
+     */
+    editable: {
+      type: Boolean,
+      required: true,
+    }
   },
 
   data() {
@@ -62,6 +70,9 @@ export default defineComponent({
       return Object.keys(this.dependencies).length < this.possibleVariables.length;
     },
     availableAddOptions() {
+      if (!this.possibleVariables) {
+        return [];
+      }
       const usingKeySet = new Set(Object.keys(this.dependencies));
       return this.possibleVariables.filter(v => !usingKeySet.has(v))
     }
@@ -132,7 +143,7 @@ export default defineComponent({
     <div class="row">
       <div class="col-auto d-flex flex-row mb-2">
         <h3 class="mb-0 me-1">Обозначения</h3>
-        <div class="d-flex align-items-center" :class="this.isEditIconShown ? '' : 'd-none'">
+        <div class="d-flex align-items-center" :class="this.editable && this.isEditIconShown ? '' : 'd-none'">
           <EditIcon v-if="!isEditing" class="edit-icon" @click="startEditing"/>
         </div>
       </div>
@@ -155,7 +166,7 @@ export default defineComponent({
           <!-- Selector of dependency formula -->
           <div class="col-auto d-flex align-items-center ms-3 me-1">
             <FormulaSelector
-                v-if="isEditing"
+                v-if="editable && isEditing"
                 :possible-options="dependencyOptionsMap"
                 :selectedId="value"
                 @update:selectedId="(newId) => selectDependency(key, newId)"/>

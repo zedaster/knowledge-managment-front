@@ -13,6 +13,7 @@ import ArticleContent from "@/components/knowledge/ArticleContent.vue";
 import ArticleHead from "@/components/knowledge/head/ArticleHead.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import {TreeUpdateService} from "@/service/TreeUpdateService";
+import {useUserStore} from "@/store/UserStore";
 
 /**
  * Util to get an updated tree
@@ -43,6 +44,8 @@ export default defineComponent({
   data() {
     return {
       editApi: new ArticleApi(),
+      userStorage: useUserStore(),
+
       tree: undefined as ArticleTree | undefined,
       article: undefined as Article | undefined,
       isLoading: true,
@@ -52,7 +55,6 @@ export default defineComponent({
   },
 
   mounted() {
-    // console.log("[ARTICLE] is mounted")
     // this.loadArticle()
     if (this.id) {
       // console.log("[ARTICLE] Loading a full tree")
@@ -71,6 +73,10 @@ export default defineComponent({
       }
       return undefined;
     },
+
+    canUserEdit() {
+      return this.userStorage.canEdit();
+    }
   },
 
   watch: {
@@ -184,7 +190,7 @@ export default defineComponent({
         <div class="row" @mouseover="onTitleMouseOver" @mouseleave="onTitleMouseLeave">
           <div class="col-12 d-flex flex-row mb-2">
             <h1 class="me-2">{{ this.article.title }}</h1>
-            <div class="d-flex align-items-center gap-1" v-if="isEditIconShown">
+            <div v-if="canUserEdit && isEditIconShown" class="d-flex align-items-center gap-1">
               <EditIcon class="edit-icon" @click="edit"/>
               <RemoveIcon class="edit-icon" @click="remove"/>
             </div>

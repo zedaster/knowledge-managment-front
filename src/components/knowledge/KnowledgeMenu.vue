@@ -82,12 +82,20 @@ export default defineComponent({
           route: 'article'
         }
       ],
+
+      /**
+       * User storage
+       */
+      userStorage
     }
   },
 
   computed: {
     visibleNavItems() {
       return this.navItems.filter((item) => !item.hidden)
+    },
+    canUserEdit() {
+      return this.userStorage.canEdit()
     }
   },
 
@@ -122,7 +130,7 @@ export default defineComponent({
                  :selected-id="selectedId" />
   </ul>
   <div class="spacer"></div>
-  <AddButton class="w-100" @click="openAddArticlePage">Новая статья</AddButton>
+  <AddButton v-if="canUserEdit" class="w-100" @click="openAddArticlePage">Новая статья</AddButton>
 </template>
 
 <style scoped>

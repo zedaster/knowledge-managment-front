@@ -13,7 +13,7 @@ export default defineComponent({
   components: {AssuranceModal, SaveIcon, EditIcon, CancelIcon},
 
   props: {
-    contentEditable: {
+    editable: {
       type: Boolean,
       default: false
     },
@@ -116,7 +116,7 @@ export default defineComponent({
       </math-field>
     </div>
 
-    <div v-if="contentEditable && !isEditing" class="col-auto">
+    <div v-if="editable && !isEditing" class="col-auto">
       <button @click="editContent" type="button" class="btn tool-btn">
         <EditIcon/>
       </button>

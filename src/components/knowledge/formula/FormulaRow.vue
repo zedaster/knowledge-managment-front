@@ -28,7 +28,15 @@ export default defineComponent({
      */
     dependencyOptions: {
       type: Object as PropType<Array<Formula>>,
-      required: true
+      required: true,
+    },
+
+    /**
+     * Possibility to edit the formula
+     */
+    isEditable: {
+      type: Boolean,
+      required: true,
     }
   },
 
@@ -81,20 +89,31 @@ export default defineComponent({
 <template>
   <div class="card">
     <div class="card-body">
-      <FormulaTitle v-model="formula.title" @remove="remove"/>
+      <FormulaTitle v-model="formula.title"
+                    :editable="isEditable"
+                    @remove="remove"/>
       <!-- TODO Provide warn variables -->
       <!-- TODO Provide result -->
       <FormulaField v-model="formula.formula"
                     :result="formula.result"
                     :warn-variables="[]"
-                    :content-editable="true"/>
+                    :editable="isEditable"/>
       <br>
-      <FormulaDependencies v-model="formula.dependencies"
-                           v-if="possibleVariables.length !== 0"
-                           :possible-variables="possibleVariables"
-                           :dependency-options="dependencyOptions"/>
 
-      <AssuranceModal title="Удаление формулы"
+      <div v-if="formula.dependencies && Object.keys(formula.dependencies).length !== 0">
+        <FormulaDependencies v-if="isEditable"
+                             v-model="formula.dependencies"
+                             :editable="true"
+                             :possible-variables="possibleVariables"
+                             :dependency-options="dependencyOptions"/>
+        <FormulaDependencies v-else
+                             v-model="formula.dependencies"
+                             :dependency-options="dependencyOptions"
+                             :editable="false"/>
+      </div>
+
+      <AssuranceModal v-if="isEditable"
+                      title="Удаление формулы"
                       cancel-label="Отменить"
                       sure-label="Удалить"
                       v-model:showing="isRemoving"
