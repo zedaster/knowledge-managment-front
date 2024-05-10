@@ -60,7 +60,6 @@ export default defineComponent({
     },
 
     updateTooltip() {
-      console.log('New tooltip text is ' + this.tooltipText)
       const wrapper = this.$refs.registerButtonWrapper;
       Tooltip.getOrCreateInstance(wrapper).setContent({'.tooltip-inner': this.tooltipText})
     }

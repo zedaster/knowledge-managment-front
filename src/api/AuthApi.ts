@@ -3,22 +3,18 @@ import type {LoginDto} from "@/api/dto/LoginDto";
 import axios from "axios";
 import config from "@/config/api.config"
 import type {JwtTokenPair} from "@/models/JwtTokenPair";
+import {useUserStore} from "@/store/UserStore";
+import type {User} from "@/models/user/User";
 
 /**
  * The class is responsible for operations with authorization and tokens
  */
 export class AuthApi {
     /**
-     * Key for access token in local storage
+     * Storage with user data
      * @private
      */
-    private static readonly LS_KEY_ACCESS_TOKEN = "ACCESS_TOKEN"
-
-    /**
-     * Key for refresh token in local storage
-     * @private
-     */
-    private static readonly LS_KEY_REFRESH_TOKEN = "REFRESH_TOKEN"
+    private readonly userStorage = useUserStore();
 
     public async register(data: RegisterDto) {
         try {
@@ -29,7 +25,7 @@ export class AuthApi {
                 withCredentials: false,
             });
         } catch (e: any) {
-            if (e.response.status == 400) {
+            if (e.response && e.response.status == 400) {
                 throw e.response.data;
             }
             console.error('Wrong register response!')
@@ -40,6 +36,7 @@ export class AuthApi {
 
     public async login(data: LoginDto) {
         try {
+            console.log("trying to login...")
             const response = await axios.post<JwtTokenPair | string>(
                 config.LOGIN,
                 data, {
@@ -47,18 +44,20 @@ export class AuthApi {
                 });
 
             const tokenPair = response.data as JwtTokenPair;
-            localStorage.setItem(AuthApi.LS_KEY_ACCESS_TOKEN, tokenPair.accessToken)
-            localStorage.setItem(AuthApi.LS_KEY_REFRESH_TOKEN, tokenPair.token)
+            const user = this.extractUser(tokenPair);
+            console.log("We've got a new user!")
+            console.log(JSON.stringify(user))
+            this.userStorage.updateUser(user);
         } catch (e: any) {
-            if (e.response.status == 400) {
+            if (e.response && e.response.status == 400) {
                 throw e.response.data as string;
             }
 
-            if (e.response.status == 401) {
+            if (e.response && e.response.status == 401) {
                 throw "Данные введены неверно!"
             }
 
-            console.error('Wrong login response!')
+            console.error('Wrong login response!', e)
         }
     }
 
@@ -66,18 +65,14 @@ export class AuthApi {
      * Logs out the user
      */
     public logout() {
-        localStorage.removeItem(AuthApi.LS_KEY_ACCESS_TOKEN);
-        localStorage.removeItem(AuthApi.LS_KEY_REFRESH_TOKEN);
+        this.userStorage.clearUser()
     }
 
     /**
      * Throws an error if the user is unauthorized
      */
     public throwIfNotAuthorized() {
-        const accessToken = localStorage.getItem(AuthApi.LS_KEY_ACCESS_TOKEN);
-        const refreshToken = localStorage.getItem(AuthApi.LS_KEY_REFRESH_TOKEN);
-
-        if (!accessToken || !refreshToken) {
+        if (!this.userStorage.hasUser()) {
             throw "Unauthorized"
         }
     }
@@ -88,13 +83,13 @@ export class AuthApi {
     public async refreshTokenPair() {
         console.log('Refreshing tokens')
         const response = await axios.post<JwtTokenPair>(config.REFRESH_TOKEN, {
-            token: localStorage.getItem(AuthApi.LS_KEY_REFRESH_TOKEN)
+            token: this.userStorage.user!.tokenPair.token
         }, {
             withCredentials: false,
         });
 
-        localStorage.setItem(AuthApi.LS_KEY_ACCESS_TOKEN, response.data.accessToken)
-        localStorage.setItem(AuthApi.LS_KEY_REFRESH_TOKEN, response.data.token)
+        const jwtPair = response.data as JwtTokenPair
+        this.userStorage.updateUserTokenPair(jwtPair)
     }
 
     /**
@@ -111,32 +106,29 @@ export class AuthApi {
     }
 
     /**
-     * Returns name of the authorized user
-     */
-    public getUsername() {
-        this.throwIfNotAuthorized();
-        const accessToken = localStorage.getItem(AuthApi.LS_KEY_ACCESS_TOKEN) as string;
-        const payload = this.extractJwtData(accessToken);
-        return payload.sub
-    }
-
-    /**
-     * Returns payload from a JWT token
-     * @param jwtToken the token
+     * Extracts user from its token pair
+     * @param tokenPair Token pair
      * @private
      */
-    private extractJwtData(jwtToken: string): any {
-        return JSON.parse(atob(jwtToken.split('.')[1]));
+    private extractUser(tokenPair: JwtTokenPair): User {
+        const payload = this.extractJwtPayload(tokenPair.accessToken);
+        const nickname = payload.sub
+        // TODO Get user
+        return {
+            tokenPair: tokenPair,
+            name: nickname,
+            group: 'user'
+        }
     }
 
     /**
-     * Returns value for "Authorization" HTTP request header
+     * Extracts payload from a JWT token
+     * @param jwtToken JWT token
+     * @private
      */
-    public getAuthorizationHeader(): string | null {
-        const accessToken = localStorage.getItem(AuthApi.LS_KEY_ACCESS_TOKEN);
-        if (!accessToken) {
-            return null;
-        }
-        return "Bearer " + accessToken;
+    private extractJwtPayload(jwtToken: string): any {
+        console.log("Trying to extract JWT")
+        console.log(jwtToken)
+        return JSON.parse(atob(jwtToken.split('.')[1]));
     }
 }

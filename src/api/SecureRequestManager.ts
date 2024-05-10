@@ -1,6 +1,7 @@
 import type {AxiosResponse} from "axios"
 import axios from "axios";
 import {AuthApi} from "@/api/AuthApi";
+import {useUserStore} from "@/store/UserStore";
 
 /**
  * Produces secure HTTP requests (with tokens from {@link AuthApi})
@@ -13,6 +14,12 @@ export class SecureRequestManager {
     private readonly authApi = new AuthApi();
 
     /**
+     * Storage of user data (including accessToken)
+     * @private
+     */
+    private readonly userStorage = useUserStore();
+
+    /**
      * Produces secure GET request
      * @param url URL
      */
@@ -20,7 +27,7 @@ export class SecureRequestManager {
         const response = await this.produceSecureRequest(() =>
             axios.get<T>(url, {
                 headers: {
-                    "Authorization": this.authApi.getAuthorizationHeader()
+                    "Authorization": this.getAuthorizationHeader()
                 },
                 withCredentials: false,
             })
@@ -37,7 +44,7 @@ export class SecureRequestManager {
         const response = await this.produceSecureRequest(() =>
             axios.post<T>(url, data, {
                 headers: {
-                    "Authorization": this.authApi.getAuthorizationHeader()
+                    "Authorization": this.getAuthorizationHeader()
                 },
                 withCredentials: false,
             })
@@ -53,7 +60,7 @@ export class SecureRequestManager {
         await this.produceSecureRequest(() =>
             axios.delete(url, {
                 headers: {
-                    "Authorization": this.authApi.getAuthorizationHeader()
+                    "Authorization": this.getAuthorizationHeader()
                 },
                 withCredentials: false,
             })
@@ -95,5 +102,19 @@ export class SecureRequestManager {
                     reject("Unauthenticated")
                 });
         })
+    }
+
+    /**
+     * Returns value for "Authorization" HTTP request header
+     */
+    private getAuthorizationHeader() {
+        console.log("User is " + JSON.stringify(this.userStorage.user))
+        console.log("User token pair is " + JSON.stringify(this.userStorage.user!.tokenPair))
+        // @ts-ignore
+        const accessToken = this.userStorage.user!.tokenPair.accessToken
+        if (!accessToken) {
+            return null;
+        }
+        return "Bearer " + accessToken;
     }
 }

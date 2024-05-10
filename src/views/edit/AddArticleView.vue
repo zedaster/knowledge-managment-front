@@ -87,7 +87,8 @@ export default defineComponent({
       }).then(() => {
         this.$router.go(-1);
       }).catch((e) => {
-        this.$router.push({name: 'login'})
+        console.log("Error with editApi.createArticle")
+        throw e;
       });
     },
   },

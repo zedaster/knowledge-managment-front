@@ -6,6 +6,9 @@ import SearchInput from "@/components/nav/SearchInput.vue";
 import {defineComponent} from "vue";
 import AssuranceModal from "@/components/modal/AssuranceModal.vue";
 import {AuthApi} from "@/api/AuthApi";
+import {useUserStore} from "@/store/UserStore";
+
+const userStore = useUserStore();
 
 export default defineComponent({
   components: {AssuranceModal, SearchInput, SiteButton, ProfileIcon},
@@ -44,11 +47,7 @@ export default defineComponent({
       return this.editMode
     },
     username() {
-      try {
-        return new AuthApi().getUsername();
-      } catch (e) {
-        this.$router.push({name: 'login'})
-      }
+      return userStore.user!.name
     }
   },
 
