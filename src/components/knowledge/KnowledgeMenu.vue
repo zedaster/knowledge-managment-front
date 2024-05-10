@@ -18,15 +18,21 @@ type NavItem = {
    * Title for navigation item
    */
   title: string,
+
   /**
    * Icon svg component for the item
    */
   icon: Component,
+
   /**
    * String id of route. See {@link router}
    */
   route: string,
-  isForAdmin?: boolean
+
+  /**
+   * Is nav item hidden (defalut behavior: it is visible)
+   */
+  hidden?: boolean,
 }
 
 /**
@@ -47,11 +53,13 @@ export default defineComponent({
   },
 
   data() {
+    const userStorage = useUserStore();
+
     return {
       /**
        * Contains items for the menu
        */
-      navItems: [
+      navItems: <NavItem[]>[
         {
           title: 'Главная',
           icon: HomeMenuIcon,
@@ -61,7 +69,7 @@ export default defineComponent({
           title: 'Администратор',
           icon: AdminMenuIcon,
           route: 'admin',
-          isForAdmin: true,
+          hidden: !userStorage.isAdmin(),
         },
         {
           title: 'Формулы',
@@ -73,15 +81,13 @@ export default defineComponent({
           icon: ArticlesMenuIcon,
           route: 'article'
         }
-      ] as NavItem[],
-
-      userStorage: useUserStore()
+      ],
     }
   },
 
   computed: {
-    handledNavItems() {
-      return this.navItems.filter((item) => !item.isForAdmin || this.userStorage.isAdmin())
+    visibleNavItems() {
+      return this.navItems.filter((item) => !item.hidden)
     }
   },
 
@@ -98,7 +104,7 @@ export default defineComponent({
 
 <template>
   <ul class="nav nav-pills flex-column">
-    <li class="nav-item" v-for="item in handledNavItems">
+    <li class="nav-item" v-for="item in visibleNavItems">
       <RouterLink
           :to="{name: item.route}"
           :class="['nav-link', { 'active' : this.$route.name === item.route }]"

@@ -59,12 +59,20 @@ export const useUserStore = defineStore('user', () => {
         return hasUser() && (user.value!.group == 'admin')
     }
 
+    /**
+     * Returns true if the user has editor rights
+     */
+    const canEdit = () => {
+        return hasUser() && (user.value!.group == 'writer' || user.value!.group == 'admin')
+    }
+
     return {
         user,
         updateUser,
         updateUserTokenPair,
         clearUser,
         hasUser,
-        isAdmin
+        isAdmin,
+        canEdit
     }
 })

@@ -9,16 +9,8 @@ import EditArticleView from "@/views/edit/EditArticleView.vue";
 import AdminView from "@/views/AdminView.vue";
 import {useUserStore} from "@/store/UserStore";
 
-
-const isAuthenticated = (to: any, from: any, next: any) => {
-    const userStorage = useUserStore();
-    if (userStorage.hasUser()) {
-        next();
-        return;
-    }
-
-    router.push({name: 'login'})
-}
+// If user tries to open another page, auth tokens will be checked
+const authPages = new Set(['login', 'register']);
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,7 +19,6 @@ const router = createRouter({
             path: '/',
             name: 'home',
             component: HomeView,
-            beforeEnter: isAuthenticated
         },
         {
             path: '/login',
@@ -44,35 +35,69 @@ const router = createRouter({
             name: 'article',
             component: ArticleView,
             props: true,
-            beforeEnter: isAuthenticated,
         },
         {
             path: '/add_article/:parentId?',
             name: 'add_article',
             component: AddArticleView,
             props: true,
-            beforeEnter: isAuthenticated,
+            beforeEnter: kickIfCantEdit,
         },
         {
             path: '/edit_article/:id',
             name: 'edit_article',
             component: EditArticleView,
             props: true,
-            beforeEnter: isAuthenticated,
+            beforeEnter: kickIfCantEdit,
         },
         {
             path: '/formulas',
             name: 'formulas',
             component: FormulasView,
-            beforeEnter: isAuthenticated,
         },
         {
             path: '/admin',
             name: 'admin',
             component: AdminView,
-            beforeEnter: isAuthenticated,
+            beforeEnter: kickIfNotAdmin,
         }
     ]
 })
+
+router.beforeEach((to, from) => {
+    kickIfNotAuthorized(to);
+})
+
+function kickIfNotAuthorized(to: any) {
+    if (authPages.has(to.name as string)) {
+        return;
+    }
+
+    const userStorage = useUserStore();
+    if (userStorage.hasUser()) {
+        return;
+    }
+
+    console.log("Kicking unauthorized user")
+    router.push({name: 'login'})
+}
+
+function kickIfCantEdit(to: any, from: any, next: any) {
+    const userStorage = useUserStore();
+    if (!userStorage.canEdit()) {
+        router.push({name: 'home'});
+        return;
+    }
+    next();
+}
+
+function kickIfNotAdmin(to: any, from: any, next: any) {
+    const userStorage = useUserStore();
+    if (!userStorage.isAdmin()) {
+        router.push({name: 'home'});
+        return;
+    }
+    next();
+}
 
 export default router

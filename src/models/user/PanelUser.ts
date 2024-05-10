@@ -1,3 +1,5 @@
+import type {Role} from "@/models/user/Role";
+
 /**
  * Information about user that is shown on the admin page
  */
@@ -9,8 +11,3 @@ export interface PanelUser {
     regDate: Date,
     role: Role,
 }
-
-/**
- * Permission roles for users
- */
-export type Role = "reader" | "writer" | "admin"

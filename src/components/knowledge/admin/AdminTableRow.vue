@@ -1,7 +1,8 @@
 <script lang="ts">
 import type {PropType} from "vue";
 import {defineComponent} from "vue";
-import type {PanelUser, Role} from "@/models/user/PanelUser";
+import type {PanelUser} from "@/models/user/PanelUser";
+import type {Role} from "@/models/user/Role";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 
 export default defineComponent({
