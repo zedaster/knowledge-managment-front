@@ -7,8 +7,6 @@ import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router'
 import {createPinia} from 'pinia'
-// @ts-ignore
-import uncaught from 'uncaught'
 
 const app = createApp(App)
 

@@ -1,4 +1,4 @@
-const apiUrl = 'http://localhost:55555/'
+const apiUrl = import.meta.env.VITE_API_URL
 
 export default {
     GET_ROOT_TREE: apiUrl,
