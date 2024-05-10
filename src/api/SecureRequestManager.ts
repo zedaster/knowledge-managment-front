@@ -2,6 +2,7 @@ import type {AxiosResponse} from "axios"
 import axios from "axios";
 import {AuthApi} from "@/api/AuthApi";
 import {useUserStore} from "@/store/UserStore";
+import {useRouter} from "vue-router";
 
 /**
  * Produces secure HTTP requests (with tokens from {@link AuthApi})
@@ -18,6 +19,8 @@ export class SecureRequestManager {
      * @private
      */
     private readonly userStorage = useUserStore();
+
+    private readonly router = useRouter();
 
     /**
      * Produces secure GET request
@@ -76,9 +79,18 @@ export class SecureRequestManager {
      */
     private async produceSecureRequest<T>(requestProducer: () => Promise<AxiosResponse<T>>,
                                           tokensRefreshed = false): Promise<AxiosResponse<T, any>> {
-        this.authApi.throwIfNotAuthorized();
+        const kickUser = (reject: any) => {
+            this.authApi.logout();
+            this.router.push({name: 'login'});
+            reject("Unauthenticated")
+        }
 
         return new Promise((resolve, reject) => {
+            if (!this.userStorage.hasUser()) {
+                kickUser(reject);
+                return;
+            }
+
             requestProducer()
                 .then((r) => {
                     resolve(r)
@@ -88,8 +100,7 @@ export class SecureRequestManager {
                         try {
                             await this.authApi.refreshTokenPair();
                         } catch (e) {
-                            this.authApi.logout();
-                            reject("Unauthenticated")
+                            kickUser(reject);
                             return
                         }
                         // when token refreshed, set true
@@ -98,8 +109,7 @@ export class SecureRequestManager {
                         return
                     }
                     // when all tokens expired
-                    this.authApi.logout();
-                    reject("Unauthenticated")
+                    kickUser(reject);
                 });
         })
     }
@@ -108,8 +118,6 @@ export class SecureRequestManager {
      * Returns value for "Authorization" HTTP request header
      */
     private getAuthorizationHeader() {
-        console.log("User is " + JSON.stringify(this.userStorage.user))
-        console.log("User token pair is " + JSON.stringify(this.userStorage.user!.tokenPair))
         // @ts-ignore
         const accessToken = this.userStorage.user!.tokenPair.accessToken
         if (!accessToken) {

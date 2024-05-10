@@ -8,8 +8,6 @@ import AssuranceModal from "@/components/modal/AssuranceModal.vue";
 import {AuthApi} from "@/api/AuthApi";
 import {useUserStore} from "@/store/UserStore";
 
-const userStore = useUserStore();
-
 export default defineComponent({
   components: {AssuranceModal, SearchInput, SiteButton, ProfileIcon},
 
@@ -31,6 +29,7 @@ export default defineComponent({
   data() {
     return {
       exitModalShowing: false,
+      userStorage: useUserStore(),
     }
   },
 
@@ -47,7 +46,7 @@ export default defineComponent({
       return this.editMode
     },
     username() {
-      return userStore.user!.name
+      return this.userStorage.user!.name
     }
   },
 

@@ -38,8 +38,6 @@ export default defineComponent({
     },
 
     updateFormula(newFormula) {
-      console.log("Formula is changed");
-      console.log("New formula is " + JSON.stringify(newFormula));
       this.editApi.updateFormula(newFormula);
     },
 

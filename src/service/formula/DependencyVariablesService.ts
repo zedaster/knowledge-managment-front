@@ -79,7 +79,6 @@ export class DependencyVariablesService {
         if (expression.json.length > 2 && expression.json[0] === "Equal" && expression.json[1] === freeVariables[0]) {
             result.delete(freeVariables[0]);
         }
-        //console.log(`Extracted vars are ${JSON.stringify(result)}`)
         return result;
     }
 }

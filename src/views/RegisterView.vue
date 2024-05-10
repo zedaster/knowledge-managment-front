@@ -5,6 +5,7 @@ import {defineComponent} from "vue";
 import {AuthApi} from "@/api/AuthApi";
 import {Tooltip} from "bootstrap";
 import type {RegisterDto} from "@/api/dto/RegisterDto";
+import {useUserStore} from "@/store/UserStore";
 
 /**
  * Register view
@@ -15,6 +16,8 @@ export default defineComponent({
   data() {
     return {
       api: new AuthApi(),
+      userStorage: useUserStore(),
+
       registerDto: {
         login: '',
         // email: '',
@@ -29,11 +32,14 @@ export default defineComponent({
     }
   },
 
-  mounted() {
-    if (this.api.isAuthorized()) {
+  created() {
+    if (this.userStorage.hasUser()) {
       this.$router.push({name: 'home'});
       return;
     }
+  },
+
+  mounted() {
     this.updateTooltip()
   },
 

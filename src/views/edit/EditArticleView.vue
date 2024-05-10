@@ -50,7 +50,8 @@ export default defineComponent({
       this.isVersionsLoading = false;
       this.isArticleLoading = false;
     }).catch((e) => {
-      this.$router.push({name: 'login'})
+      console.log("Error with editApi.getEditData");
+      throw e;
     })
   },
 
@@ -66,7 +67,8 @@ export default defineComponent({
       }).then(() => {
         this.$router.push({name: 'article', params: {id: this.id}})
       }).catch((e) => {
-        this.$router.push({name: 'login'})
+        console.log("Error with editApi.commit")
+        throw e
       })
     }
   },
@@ -79,7 +81,8 @@ export default defineComponent({
         this.content = JSON.parse(data.content);
         this.isArticleLoading = false;
       }).catch((e) => {
-        this.$router.push({name: 'login'})
+        console.log("Error with this.editApi.getCertainVersion")
+        throw e
       })
     },
   }

@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {Component, defineComponent, PropType} from "vue";
 import ArticleMenu from "@/components/knowledge/ArticleMenu.vue";
 import AddButton from "@/components/knowledge/AddButton.vue";
 import HomeMenuIcon from "@/components/icons/HomeMenuIcon.vue";
@@ -7,6 +7,27 @@ import ArticlesMenuIcon from "@/components/icons/ArticlesMenuIcon.vue";
 import {ArticleTree} from "@/models/article/ArticleTree";
 import FormulaMenuIcon from "@/components/icons/FormulaMenuIcon.vue";
 import router from "@/router";
+import {useUserStore} from "@/store/UserStore";
+import AdminMenuIcon from "@/components/icons/AdminMenuIcon.vue";
+
+/**
+ * Type for a navigation item
+ */
+type NavItem = {
+  /**
+   * Title for navigation item
+   */
+  title: string,
+  /**
+   * Icon svg component for the item
+   */
+  icon: Component,
+  /**
+   * String id of route. See {@link router}
+   */
+  route: string,
+  isForAdmin?: boolean
+}
 
 /**
  * Menu on the left side of {@link KnowledgeLayout}
@@ -27,11 +48,20 @@ export default defineComponent({
 
   data() {
     return {
+      /**
+       * Contains items for the menu
+       */
       navItems: [
         {
           title: 'Главная',
           icon: HomeMenuIcon,
           route: 'home'
+        },
+        {
+          title: 'Администратор',
+          icon: AdminMenuIcon,
+          route: 'admin',
+          isForAdmin: true,
         },
         {
           title: 'Формулы',
@@ -43,21 +73,32 @@ export default defineComponent({
           icon: ArticlesMenuIcon,
           route: 'article'
         }
-      ]
+      ] as NavItem[],
+
+      userStorage: useUserStore()
+    }
+  },
+
+  computed: {
+    handledNavItems() {
+      return this.navItems.filter((item) => !item.isForAdmin || this.userStorage.isAdmin())
     }
   },
 
   methods: {
+    /**
+     * Opens add article page
+     */
     openAddArticlePage() {
       router.push({name: 'add_article', params: {parentId: this.selectedId}})
-    }
+    },
   }
 })
 </script>
 
 <template>
   <ul class="nav nav-pills flex-column">
-    <li class="nav-item" v-for="item in navItems">
+    <li class="nav-item" v-for="item in handledNavItems">
       <RouterLink
           :to="{name: item.route}"
           :class="['nav-link', { 'active' : this.$route.name === item.route }]"

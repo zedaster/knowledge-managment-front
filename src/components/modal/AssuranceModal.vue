@@ -37,7 +37,6 @@ export default defineComponent({
     });
 
     (this.$refs.modal as any).addEventListener('hidden.bs.modal', (event) => {
-      console.log('Modal hidden')
       this.$emit('update:showing', false);
     });
   },

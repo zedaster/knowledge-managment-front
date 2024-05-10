@@ -12,6 +12,12 @@ import AssuranceModal from "@/components/modal/AssuranceModal.vue";
 import ArticleContent from "@/components/knowledge/ArticleContent.vue";
 import ArticleHead from "@/components/knowledge/head/ArticleHead.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import {TreeUpdateService} from "@/service/TreeUpdateService";
+
+/**
+ * Util to get an updated tree
+ */
+const treeUpdateService = new TreeUpdateService();
 
 /**
  * Page of a specific article
@@ -27,6 +33,7 @@ export default defineComponent({
     NavBar,
     KnowledgeLayout
   },
+
   props: {
     id: {
       type: Object as PropType<string | undefined>,
@@ -45,7 +52,16 @@ export default defineComponent({
   },
 
   mounted() {
-    this.loadArticle()
+    // console.log("[ARTICLE] is mounted")
+    // this.loadArticle()
+    if (this.id) {
+      // console.log("[ARTICLE] Loading a full tree")
+      this.loadArticleWithFullTree(this.idToNumber!)
+    } else {
+      // console.log("[ARTICLE] Loading the root tree")
+      this.loadRootTree()
+    }
+
   },
 
   computed: {
@@ -59,31 +75,58 @@ export default defineComponent({
 
   watch: {
     id(newId) {
-      this.loadArticle()
+      // console.log("[ARTICLE] Updating article and tree")
+      this.updateArticleAndTree(this.idToNumber!)
     }
   },
 
   methods: {
-    loadArticle() {
+    /**
+     * Загружает корневое дерево статьей
+     */
+    loadRootTree() {
       this.isLoading = true;
+      this.article = undefined;
+      this.editApi.getRootTree().then((tree) => {
+        this.tree = tree;
+        this.isLoading = false;
+      }).catch((e) => {
+        console.log('root tree loading thrown an error')
+        throw e
+      })
+    },
 
-      if (!this.id) {
-        this.editApi.getRootTree().then((tree) => {
-          this.tree = tree;
-          this.article = undefined;
-          this.isLoading = false;
-        }).catch((e) => {
-          this.$router.push({name: 'login'})
-        })
-        return
-      }
-
-      this.editApi.getArticleWithTreeById(this.idToNumber!).then((articleWithTree) => {
+    /**
+     * Загружает статью с полным деревом
+     * @param id Id статьи
+     */
+    loadArticleWithFullTree(id: number) {
+      this.isLoading = true;
+      this.article = undefined;
+      this.editApi.getArticleWithTree(id).then((articleWithTree) => {
         this.article = articleWithTree.article;
         this.tree = articleWithTree.tree;
         this.isLoading = false;
       }).catch((e) => {
-        this.$router.push({name: 'login'})
+        console.log('loadArticleWithFullTree thrown an error')
+        throw e
+      })
+    },
+
+    /**
+     * Обновляет статью и только нужные пункты в меню
+     * @param id
+     */
+    updateArticleAndTree(id: number) {
+      this.isLoading = true;
+      this.article = undefined;
+      this.editApi.getArticleWithChildren(id).then((articleWithChildren) => {
+        this.article = articleWithChildren.article;
+        this.tree = treeUpdateService.getUpdatedTree(this.tree!, this.article!.id, articleWithChildren.childArticles)
+        this.isLoading = false;
+      }).catch(e => {
+        console.log('updateArticleAndTree thrown an error')
+        throw e
       })
     },
 
@@ -113,7 +156,8 @@ export default defineComponent({
       this.editApi.removeById(id).then(() => {
         this.$router.push(redirectParams)
       }).catch((e) => {
-        this.$router.push({name: 'login'})
+        console.log('sureRemove thrown an error')
+        throw e
       })
     },
 

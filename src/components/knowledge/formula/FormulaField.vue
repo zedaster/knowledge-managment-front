@@ -99,10 +99,8 @@ export default defineComponent({
     },
 
     updateLostDependencies(): void {
-      console.log('Updating lost dependencies')
       this.lostDependencies = new DependencyVariablesService()
           .getLostDependencies(this.newValue, this.warnVariables);
-      console.log(`Lost dependencies are ${this.lostDependencies}`)
     }
   }
 })

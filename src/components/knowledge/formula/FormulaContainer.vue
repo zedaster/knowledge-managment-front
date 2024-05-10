@@ -23,7 +23,6 @@ export default defineComponent({
   },
 
   mounted() {
-    console.log("Formula mounted with id " + this.formulaId)
     this.api.getOneById(this.formulaId).then((formula: Formula) => {
       this.formula = formula;
       // @ts-ignore

@@ -8,9 +8,6 @@ import FormulaSelector from "@/components/knowledge/formula/FormulaSelector.vue"
  * Editor.js block with a formula. It works as a plugin to support formulas
  */
 export class FormulaBlock {
-    // TODO: Перевести всё в editor js на русский
-    // TODO: Добавить картинки
-
     /**
      * Raw html of icon of the tool in the menu
      * Taken from Codex icon pack https://codex.so/icons-v0-2-0

@@ -1,10 +1,10 @@
 import type {ArticleWithTree} from "@/models/article/ArticleWithTree";
 import config from "@/config/api.config"
-import type {ArticleWithTreeDto} from "@/api/dto/ArticleWithTreeDto";
+import type {ArticleLinkWithChildren, ArticleWithTreeDto} from "@/api/dto/ArticleWithTreeDto";
 import type {ArticleLink} from "@/models/article/ArticleLink";
-import type {Article} from "@/models/article/Article";
 import {SecureRequestManager} from "@/api/SecureRequestManager";
 import type {ArticleTree} from "@/models/article/ArticleTree";
+import type {ArticleWithChildren} from "@/models/article/ArticleWithChildren";
 
 /**
  * API manager for articles
@@ -23,13 +23,22 @@ export class ArticleApi {
     }
 
     /**
-     * Requests article (including tree) with a specific ID
+     * Requests article and full tree to the article with a specific ID
      * @param id T
      */
-    public async getArticleWithTreeById(id: number): Promise<ArticleWithTree> {
-        const url = config.GET_SINGLE_ARTICLE + id;
-        const response = await new SecureRequestManager().get<ArticleWithTreeDto[]>(url)
+    public async getArticleWithTree(id: number): Promise<ArticleWithTree> {
+        const url = config.GET_ARTICLE_WITH_FULL_TREE + id;
+        const response = await new SecureRequestManager().get<ArticleWithTreeDto>(url)
         return this.mapToArticleWithTree(response, id);
+    }
+
+    /**
+     * Requests article and its children (only one level of children) with a specific ID
+     * @param id
+     */
+    public async getArticleWithChildren(id: number): Promise<ArticleWithChildren> {
+        const url = config.GET_ARTICLE_WITH_CHILDREN + id;
+        return await new SecureRequestManager().get<ArticleWithChildren>(url)
     }
 
     /**
@@ -38,42 +47,55 @@ export class ArticleApi {
      * @param articleId Id of necessary article
      * @private
      */
-    private mapToArticleWithTree(response: ArticleWithTreeDto[], articleId: number): ArticleWithTree {
-        const links: ArticleLink[][] = [[]];
-        const parentIds: number[] = [];
+    private mapToArticleWithTree(response: ArticleWithTreeDto, articleId: number): ArticleWithTree {
+        let tree: ArticleTree = {
+            linksByLevel: [],
+            parentIds: []
+        }
 
-        let activeNode = response as ArticleWithTreeDto[] | null
-        let nextNode: ArticleWithTreeDto[] | null = null
-        let activeLevel = 0;
-        let article = null as null | Article;
-        while (activeNode !== null) {
-            for (const articleNode of activeNode) {
-                links[activeLevel].push({
-                    id: articleNode.article.id,
-                    title: articleNode.article.title
-                });
-                if (articleNode.article.id === articleId) {
-                    article = articleNode.article
-                }
-                if (articleNode.childArticles && articleNode.childArticles.length > 0) {
-                    nextNode = articleNode.childArticles
-                    parentIds.push(articleNode.article.id)
-                }
-            }
-
-            activeNode = nextNode
-            nextNode = null
-            activeLevel += 1
-            links.push([])
+        const respArticleLinks = response.articleLinkBranchDto
+        if (respArticleLinks) {
+            tree = this.mapArticleTree(respArticleLinks)
         }
 
         return {
-            article: article!,
-            tree: {
-                linksByLevel: links,
-                parentIds: parentIds
+            article: response.article,
+            tree: tree
+        }
+    }
+
+    /**
+     * Maps an array of {@link ArticleLinkWithChildren} to a {@link ArticleTree}
+     * @param articleLinkWithChildren The object to map
+     * @private
+     */
+    private mapArticleTree(articleLinkWithChildren: ArticleLinkWithChildren[]): ArticleTree {
+        const links: ArticleLink[][] = [];
+        const parentIds: number[] = [];
+
+        let nextNode: ArticleLinkWithChildren[] | null = articleLinkWithChildren;
+        let currentLevel = 0;
+
+        while (nextNode) {
+            links.push([])
+
+            const currentNode: ArticleLinkWithChildren[] = nextNode;
+            nextNode = null;
+
+            for (const subNode of currentNode) {
+                links[currentLevel].push(subNode.articleLink)
+                if (subNode.childArticles && subNode.childArticles.length !== 0) {
+                    nextNode = subNode.childArticles;
+                    parentIds.push(subNode.articleLink.id)
+                }
             }
-        };
+            currentLevel++;
+        }
+
+        return {
+            linksByLevel: links,
+            parentIds: parentIds
+        }
     }
 
     /**
@@ -85,12 +107,12 @@ export class ArticleApi {
             title: newArticle.title,
             content: newArticle.content,
             articleParentId: newArticle.parentId,
-            author: 'Sergey' // TODO: Убрать
+            author: 'No-name' // TODO: Убрать в API
         });
     }
 
     public async getTitleByArticleId(id: number) {
-        const article = await this.getArticleWithTreeById(id);
+        const article = await this.getArticleWithTree(id);
         return article.article.title;
     }
 

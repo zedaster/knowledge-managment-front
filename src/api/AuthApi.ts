@@ -36,7 +36,6 @@ export class AuthApi {
 
     public async login(data: LoginDto) {
         try {
-            console.log("trying to login...")
             const response = await axios.post<JwtTokenPair | string>(
                 config.LOGIN,
                 data, {
@@ -45,8 +44,6 @@ export class AuthApi {
 
             const tokenPair = response.data as JwtTokenPair;
             const user = this.extractUser(tokenPair);
-            console.log("We've got a new user!")
-            console.log(JSON.stringify(user))
             this.userStorage.updateUser(user);
         } catch (e: any) {
             if (e.response && e.response.status == 400) {
@@ -69,19 +66,9 @@ export class AuthApi {
     }
 
     /**
-     * Throws an error if the user is unauthorized
-     */
-    public throwIfNotAuthorized() {
-        if (!this.userStorage.hasUser()) {
-            throw "Unauthorized"
-        }
-    }
-
-    /**
      * Refreshes access and refresh tokens
      */
     public async refreshTokenPair() {
-        console.log('Refreshing tokens')
         const response = await axios.post<JwtTokenPair>(config.REFRESH_TOKEN, {
             token: this.userStorage.user!.tokenPair.token
         }, {
@@ -93,19 +80,6 @@ export class AuthApi {
     }
 
     /**
-     * Checks is the user authorized
-     */
-    public isAuthorized(): boolean {
-        try {
-            this.throwIfNotAuthorized()
-        } catch (e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Extracts user from its token pair
      * @param tokenPair Token pair
      * @private
@@ -113,11 +87,11 @@ export class AuthApi {
     private extractUser(tokenPair: JwtTokenPair): User {
         const payload = this.extractJwtPayload(tokenPair.accessToken);
         const nickname = payload.sub
-        // TODO Get user
+        // TODO Api: Get user group here
         return {
             tokenPair: tokenPair,
             name: nickname,
-            group: 'user'
+            group: 'admin'
         }
     }
 
@@ -127,8 +101,6 @@ export class AuthApi {
      * @private
      */
     private extractJwtPayload(jwtToken: string): any {
-        console.log("Trying to extract JWT")
-        console.log(jwtToken)
         return JSON.parse(atob(jwtToken.split('.')[1]));
     }
 }

@@ -5,6 +5,7 @@ import {defineComponent} from "vue";
 import {AuthApi} from "@/api/AuthApi";
 import type {LoginDto} from "@/api/dto/LoginDto";
 import {Tooltip} from "bootstrap";
+import {useUserStore} from "@/store/UserStore";
 
 /**
  * Login view
@@ -15,6 +16,8 @@ export default defineComponent({
   data() {
     return {
       api: new AuthApi(),
+      userStorage: useUserStore(),
+
       loginDto: {
         username: '',
         password: ''
@@ -27,11 +30,14 @@ export default defineComponent({
     }
   },
 
-  mounted() {
-    if (this.api.isAuthorized()) {
+  created() {
+    if (this.userStorage.hasUser()) {
       this.$router.push({name: 'home'});
       return;
     }
+  },
+
+  mounted() {
     this.updateTooltip()
   },
 
