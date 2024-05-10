@@ -18,15 +18,20 @@ export default defineComponent({
       api: new AuthApi(),
       userStorage: useUserStore(),
 
-      registerDto: {
+      registerDto: <RegisterDto>{
         login: '',
         // email: '',
         password: '',
-        repeatPassword: ''
-      } as RegisterDto,
+        repeatPassword: '',
+
+        lastName: '',
+        firstName: '',
+        patronymic: ''
+      },
+
       isFilled: false,
       isRegistering: false,
-      tooltipText: 'Введите логин',
+      tooltipText: 'Введите фамилию',
       alertShown: false,
       alertText: ''
     }
@@ -78,7 +83,19 @@ export default defineComponent({
         //     this.isFilled = false;
         //     this.tooltipText = 'Введите email'
         //   }
-        if (newDto.login === '') {
+        if (newDto.lastName === '') {
+          this.isFilled = false;
+          this.tooltipText = 'Введите фамилию';
+        } else if (newDto.firstName === '') {
+          this.isFilled = false;
+          this.tooltipText = 'Введите имя';
+        }
+            // TODO: Отчество обязательно или нет?
+            // else if (newDto.patronymic === '') {
+            //   this.isFilled = false;
+            //   this.tooltipText = 'Введите отчество';
+        // }
+        else if (newDto.login === '') {
           this.isFilled = false;
           this.tooltipText = 'Введите логин';
         } else if (newDto.password === '') {
@@ -113,6 +130,36 @@ export default defineComponent({
 
         <div class="alert alert-danger" role="alert" v-if="alertShown">
           {{ this.alertText }}
+        </div>
+
+        <!-- Last name input -->
+        <div class="mb-3">
+          <label for="lastNameInput" class="form-label">Фамилия</label>
+          <input type="text"
+                 class="form-control"
+                 id="lastNameInput"
+                 v-model="registerDto.lastName"
+                 placeholder="Фамилия">
+        </div>
+
+        <!-- First name input -->
+        <div class="mb-3">
+          <label for="firstNameInput" class="form-label">Имя</label>
+          <input type="text"
+                 class="form-control"
+                 id="firstNameInput"
+                 v-model="registerDto.firstName"
+                 placeholder="Имя">
+        </div>
+
+        <!-- Patronymic input -->
+        <div class="mb-3">
+          <label for="patronymicInput" class="form-label">Отчество</label>
+          <input type="text"
+                 class="form-control"
+                 id="patronymicInput"
+                 v-model="registerDto.patronymic"
+                 placeholder="Отчество">
         </div>
 
         <!-- Login input -->

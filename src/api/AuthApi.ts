@@ -17,6 +17,8 @@ export class AuthApi {
     private readonly userStorage = useUserStore();
 
     public async register(data: RegisterDto) {
+        // TODO: Синхронизировать поля с Эрнестом
+        // TODO: Отчество null или пустую строку?
         try {
             await axios.post<string>(config.REGISTER, {
                 username: data.login,
