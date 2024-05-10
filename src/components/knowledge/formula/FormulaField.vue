@@ -3,7 +3,7 @@ import EditIcon from "@/components/icons/EditIcon.vue";
 import {defineComponent} from "vue";
 import SaveIcon from "@/components/icons/SaveIcon.vue";
 import CancelIcon from "@/components/icons/CancelIcon.vue";
-import {DependencyVariablesService} from "@/service/formula/DependencyVariablesService";
+import {DependencyVariablesUtils} from "@/utils/formula/DependencyVariablesUtils";
 import AssuranceModal from "@/components/modal/AssuranceModal.vue";
 
 /**
@@ -99,7 +99,7 @@ export default defineComponent({
     },
 
     updateLostDependencies(): void {
-      this.lostDependencies = new DependencyVariablesService()
+      this.lostDependencies = new DependencyVariablesUtils()
           .getLostDependencies(this.newValue, this.warnVariables);
     }
   }

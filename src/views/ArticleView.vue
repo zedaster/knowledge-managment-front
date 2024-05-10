@@ -12,13 +12,16 @@ import AssuranceModal from "@/components/modal/AssuranceModal.vue";
 import ArticleContent from "@/components/knowledge/ArticleContent.vue";
 import ArticleHead from "@/components/knowledge/head/ArticleHead.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
-import {TreeUpdateService} from "@/service/TreeUpdateService";
+import {TreeUpdateUtils} from "@/utils/TreeUpdateUtils";
 import {useUserStore} from "@/store/UserStore";
+import {FormatDateTimeUtil} from "@/utils/format/FormatDateTimeUtil";
 
 /**
  * Util to get an updated tree
  */
-const treeUpdateService = new TreeUpdateService();
+const treeUpdateService = new TreeUpdateUtils();
+
+const dateUtil = new FormatDateTimeUtil();
 
 /**
  * Page of a specific article
@@ -76,7 +79,12 @@ export default defineComponent({
 
     canUserEdit() {
       return this.userStorage.canEdit();
-    }
+    },
+
+    strCreatedAt() {
+      console.log("Created at is " + this.article!.createdAt)
+      return dateUtil.stringifyDateWithMonthName(this.article!.createdAt)
+    },
   },
 
   watch: {
@@ -188,13 +196,16 @@ export default defineComponent({
     <div v-if="article !== undefined" class="article-content">
       <ArticleHead>
         <div class="row" @mouseover="onTitleMouseOver" @mouseleave="onTitleMouseLeave">
-          <div class="col-12 d-flex flex-row mb-2">
+          <div class="col-12 d-flex flex-row mb-0">
             <h1 class="me-2">{{ this.article.title }}</h1>
             <div v-if="canUserEdit && isEditIconShown" class="d-flex align-items-center gap-1">
               <EditIcon class="edit-icon" @click="edit"/>
               <RemoveIcon class="edit-icon" @click="remove"/>
             </div>
           </div>
+        </div>
+        <div class="row mb-4 text-muted">
+          <span>{{ article.author }}  · {{ this.strCreatedAt }}</span>
         </div>
       </ArticleHead>
 

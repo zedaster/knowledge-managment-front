@@ -29,6 +29,7 @@ export class ArticleApi {
     public async getArticleWithTree(id: number): Promise<ArticleWithTree> {
         const url = config.GET_ARTICLE_WITH_FULL_TREE + id;
         const response = await new SecureRequestManager().get<ArticleWithTreeDto>(url)
+        response.article.createdAt = new Date(response.article.createdAt);
         return this.mapToArticleWithTree(response, id);
     }
 
@@ -38,7 +39,9 @@ export class ArticleApi {
      */
     public async getArticleWithChildren(id: number): Promise<ArticleWithChildren> {
         const url = config.GET_ARTICLE_WITH_CHILDREN + id;
-        return await new SecureRequestManager().get<ArticleWithChildren>(url)
+        const response = await new SecureRequestManager().get<ArticleWithChildren>(url)
+        response.article.createdAt = new Date(response.article.createdAt);
+        return response
     }
 
     /**

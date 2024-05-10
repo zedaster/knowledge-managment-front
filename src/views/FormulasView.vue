@@ -5,7 +5,7 @@ import FormulaRow from "@/components/knowledge/formula/FormulaRow.vue";
 import {defineComponent} from "vue";
 import {FormulaApi} from "@/api/FormulaApi";
 import type Formula from "@/models/formula/Formula";
-import {DependencyOptionsService} from "@/service/formula/DependencyOptionsService";
+import {DependencyOptionsUtils} from "@/utils/formula/DependencyOptionsUtils";
 import AddButton from "@/components/knowledge/AddButton.vue";
 import NavBar from "@/components/nav/NavBar.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
@@ -43,7 +43,7 @@ export default defineComponent({
 
   methods: {
     getDependencyOptions(formula: Formula): Array<Formula> {
-      return new DependencyOptionsService().getPossibleDependencies(formula, this.formulas);
+      return new DependencyOptionsUtils().getPossibleDependencies(formula, this.formulas);
     },
 
     updateFormula(newFormula) {

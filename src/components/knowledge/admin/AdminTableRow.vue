@@ -2,8 +2,12 @@
 import type {PropType} from "vue";
 import {defineComponent} from "vue";
 import type {PanelUser} from "@/models/user/PanelUser";
-import type {Role} from "@/models/user/Role";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import {FormatDateTimeUtil} from "@/utils/format/FormatDateTimeUtil";
+import {FormatRoleUtil} from "@/utils/format/FormatRoleUtil";
+
+const dateUtil = new FormatDateTimeUtil();
+const roleUtil = new FormatRoleUtil();
 
 export default defineComponent({
   components: {LoadingSpinner},
@@ -20,26 +24,15 @@ export default defineComponent({
   },
 
   data() {
-    const roles: Record<Role, string> = {
-      admin: "Администратор",
-      writer: "Редактор",
-      reader: "Читатель"
-    };
-
     return {
-      roles
+      roleUtil
     }
   },
 
   computed: {
     strRegDate() {
       const regDate = this.user.regDate
-
-      const day = String(regDate.getDate()).padStart(2, '0');
-      const month = String(regDate.getMonth() + 1).padStart(2, '0'); // January is 0!
-      const year = regDate.getFullYear();
-
-      return `${day}.${month}.${year}`;
+      return dateUtil.stringifyDate(regDate)
     }
   },
 
@@ -63,8 +56,8 @@ export default defineComponent({
     <td>
       <div class="d-flex justify-content-center">
         <select class="form-select w-auto" v-model="user.role" @change="onChange" :disabled="disabled">
-          <option v-for="roleArray in Object.entries(roles)" :value="roleArray[0]">
-            {{ roleArray[1] }}
+          <option v-for="(roleKey, roleName) in roleUtil.getRoleNames()" :value="roleName">
+            {{ roleKey }}
           </option>
         </select>
       </div>

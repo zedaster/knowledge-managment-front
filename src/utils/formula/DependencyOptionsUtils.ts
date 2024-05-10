@@ -3,7 +3,7 @@ import type Formula from "@/models/formula/Formula";
 /**
  * Class that figures out possible dependency formulas for a specific formula
  */
-export class DependencyOptionsService {
+export class DependencyOptionsUtils {
     /**
      * Figures out possible dependency formulas for a specific formula
      * @param formula specific formula

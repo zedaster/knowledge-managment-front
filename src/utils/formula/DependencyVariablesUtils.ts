@@ -3,7 +3,7 @@ import {ComputeEngine} from "@cortex-js/compute-engine";
 /**
  * Class that works with variables in dependencies of a specific formula
  */
-export class DependencyVariablesService {
+export class DependencyVariablesUtils {
     /**
      * Engine that parses variables and other data from a raw formula
      * @private

@@ -1,7 +1,7 @@
 /**
  * Service that cleans unnecessary spaces in text
  */
-export class SpaceCleanService {
+export class SpaceCleanUtils {
     /**
      * Removes beginning and ending spaces and replaces multiple spaces to single in the middle of a specific text
      * @param text The specific text

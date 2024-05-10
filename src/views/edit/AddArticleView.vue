@@ -4,7 +4,7 @@ import {defineComponent, PropType} from "vue";
 import KnowledgeContainer from "@/components/knowledge/KnowledgeContainer.vue";
 import NavBar from "@/components/nav/NavBar.vue";
 import {ArticleApi} from "@/api/ArticleApi";
-import {SpaceCleanService} from "@/service/SpaceCleanService";
+import {SpaceCleanUtils} from "@/utils/SpaceCleanUtils";
 import FormulaSelector from "@/components/knowledge/formula/FormulaSelector.vue";
 import Formula from "@/models/formula/Formula";
 import ArticleEditor from "@/components/knowledge/edit/ArticleEditor.vue";
@@ -81,7 +81,7 @@ export default defineComponent({
     save() {
       this.isSaveButtonActive = false;
       this.editApi.createArticle({
-        title: new SpaceCleanService().trimAndFormatMultiSpaces(this.title),
+        title: new SpaceCleanUtils().trimAndFormatMultiSpaces(this.title),
         content: JSON.stringify(this.content),
         parentId: this.parentIdToNumber
       }).then(() => {

@@ -5,7 +5,7 @@ import FormulaField from "@/components/knowledge/formula/FormulaField.vue";
 import FormulaTitle from "@/components/knowledge/formula/FormulaTitle.vue";
 import FormulaDependencies from "@/components/knowledge/formula/FormulaDependencies.vue";
 import Formula from "@/models/formula/Formula";
-import {DependencyVariablesService} from "@/service/formula/DependencyVariablesService";
+import {DependencyVariablesUtils} from "@/utils/formula/DependencyVariablesUtils";
 import AssuranceModal from "@/components/modal/AssuranceModal.vue";
 
 /**
@@ -49,7 +49,7 @@ export default defineComponent({
   emits: ['update', 'remove'],
 
   setup(props, context) {
-    const variableService = new DependencyVariablesService();
+    const variableService = new DependencyVariablesUtils();
 
     watch(() => props.formula.title, () => {
       context.emit('update', props.formula);

@@ -8,6 +8,7 @@ import RegisterView from "@/views/RegisterView.vue";
 import EditArticleView from "@/views/edit/EditArticleView.vue";
 import AdminView from "@/views/AdminView.vue";
 import {useUserStore} from "@/store/UserStore";
+import ProfileView from "@/views/ProfileView.vue";
 
 // If user tries to open another page, auth tokens will be checked
 const authPages = new Set(['login', 'register']);
@@ -60,6 +61,11 @@ const router = createRouter({
             name: 'admin',
             component: AdminView,
             beforeEnter: kickIfNotAdmin,
+        },
+        {
+            path: '/profile',
+            name: 'profile',
+            component: ProfileView
         }
     ]
 })

@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import PlusIcon from "@/components/icons/PlusIcon.vue";
-import {InternalSearchService} from "@/service/InternalSearchService";
+import {InternalSearchService} from "@/utils/InternalSearchUtils";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import {FormulaApi} from "@/api/FormulaApi";
 

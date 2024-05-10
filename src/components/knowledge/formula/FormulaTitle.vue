@@ -4,7 +4,7 @@ import EditIcon from "@/components/icons/EditIcon.vue";
 import {defineComponent, ref} from "vue";
 import CancelIcon from "@/components/icons/CancelIcon.vue";
 import SaveIcon from "@/components/icons/SaveIcon.vue";
-import {SpaceCleanService} from "@/service/SpaceCleanService";
+import {SpaceCleanUtils} from "@/utils/SpaceCleanUtils";
 import RemoveIcon from "@/components/icons/RemoveIcon.vue";
 
 /**
@@ -62,7 +62,7 @@ export default defineComponent({
     },
     save() {
       this.isEditing = false;
-      this.currentTitle = new SpaceCleanService().trimAndFormatMultiSpaces(this.currentTitle);
+      this.currentTitle = new SpaceCleanUtils().trimAndFormatMultiSpaces(this.currentTitle);
       this.$emit('update:modelValue', this.currentTitle);
     },
     cancelEditing() {
@@ -78,7 +78,7 @@ export default defineComponent({
     onTitleInput(event) {
       this.currentTitle = event.target.innerText;
 
-      const cleanSpacedValue: string = new SpaceCleanService().trimAndFormatMultiSpaces(event.target.innerText);
+      const cleanSpacedValue: string = new SpaceCleanUtils().trimAndFormatMultiSpaces(event.target.innerText);
 
       if (cleanSpacedValue.length !== 0) {
         this.canBeSaved = true;

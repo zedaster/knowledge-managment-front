@@ -1,6 +1,9 @@
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import type {ArticleVersion} from "@/models/edit/ArticleVersion";
+import {FormatDateTimeUtil} from "@/utils/format/FormatDateTimeUtil";
+
+const dateTimeUtil = new FormatDateTimeUtil();
 
 export default defineComponent({
   props: {
@@ -21,15 +24,7 @@ export default defineComponent({
       this.$emit('update:currentVersion', event.target.value)
     },
     formatDate(date: Date) {
-      const newDate = new Date(date.getTime() - (5 * 60 * 60 * 1000)); // -5 hours
-      const day = (newDate.getDate() < 10 ? '0' : '') + newDate.getDate();
-      const month = (newDate.getMonth() < 9 ? '0' : '') + (newDate.getMonth() + 1);
-      const year = newDate.getFullYear();
-      const hours = newDate.getHours();
-      const minutes = (newDate.getMinutes() < 10 ? '0' : '') + newDate.getMinutes();
-      const seconds = (newDate.getSeconds() < 10 ? '0' : '') + newDate.getSeconds();
-
-      return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`
+      return dateTimeUtil.stringifyDateTime(date);
     }
   }
 });

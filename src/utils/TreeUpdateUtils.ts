@@ -4,7 +4,7 @@ import type {ArticleLink} from "@/models/article/ArticleLink";
 /**
  * Util to get an updated tree
  */
-export class TreeUpdateService {
+export class TreeUpdateUtils {
     /**
      * Returns a duplicated tree, but appends children to specified article and removes useless links
      * @param currentTree Current tree
@@ -46,6 +46,6 @@ export class TreeUpdateService {
             }
         }
 
-        throw "There is no such article in the tree! (debug TreeUpdateService.getArticleTreeLevel)"
+        throw "There is no such article in the tree! (debug TreeUpdateUtils.getArticleTreeLevel)"
     }
 }

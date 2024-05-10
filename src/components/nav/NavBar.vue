@@ -7,9 +7,10 @@ import {defineComponent} from "vue";
 import AssuranceModal from "@/components/modal/AssuranceModal.vue";
 import {AuthApi} from "@/api/AuthApi";
 import {useUserStore} from "@/store/UserStore";
+import LogoutIcon from "@/components/icons/LogoutIcon.vue";
 
 export default defineComponent({
-  components: {AssuranceModal, SearchInput, SiteButton, ProfileIcon},
+  components: {LogoutIcon, AssuranceModal, SearchInput, SiteButton, ProfileIcon},
 
   props: {
     editMode: {
@@ -46,7 +47,7 @@ export default defineComponent({
       return this.editMode
     },
     username() {
-      return this.userStorage.user!.name
+      return this.userStorage.user?.name
     }
   },
 
@@ -78,6 +79,9 @@ export default defineComponent({
     sureLeaveProfile() {
       new AuthApi().logout();
       this.$router.push({name: 'login'})
+    },
+    openProfile() {
+      this.$router.push({'name': 'profile'})
     }
 
   }
@@ -114,10 +118,15 @@ export default defineComponent({
           <div class="d-flex align-items-center">
             <!--            <SiteButton><span class="mx-3">Вход</span></SiteButton>-->
 
-            <a href="#" class="me-2" @click="leaveProfile">
-              <ProfileIcon/>
+            <a href="#" class="me-1 open-profile" @click="openProfile">
+              <ProfileIcon class="open-profile-icon"/>
+              <span class="ms-1">{{ this.username }}</span>
             </a>
-            <span class="text-white">{{ this.username }}</span>
+
+            <button href="#" class="btn btn-sm btn-outline-light ms-2" @click="leaveProfile">
+              <LogoutIcon class="leave-profile-icon"/>
+            </button>
+
           </div>
         </div>
 
@@ -161,4 +170,17 @@ export default defineComponent({
   align-items: center;
 }
 
+.open-profile {
+  color: white;
+  text-decoration: none;
+}
+
+.open-profile:hover {
+  color: #ccc;
+}
+
+.leave-profile-icon {
+  width: 22px;
+  height: 22px;
+}
 </style>
