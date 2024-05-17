@@ -56,6 +56,23 @@ export class SecureRequestManager {
     }
 
     /**
+     * Produces secure PUT request
+     * @param url URL
+     * @param data Body for the PUT request
+     */
+    async put<T>(url: string, data: any): Promise<T> {
+        const response = await this.produceSecureRequest(() =>
+            axios.put<T>(url, data, {
+                headers: {
+                    "Authorization": this.getAuthorizationHeader()
+                },
+                withCredentials: false,
+            })
+        );
+        return response.data;
+    }
+
+    /**
      * Produces secure DELETE request
      * @param url URL
      */

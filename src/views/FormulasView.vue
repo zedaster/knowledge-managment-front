@@ -46,7 +46,7 @@ export default defineComponent({
       return new DependencyOptionsUtils().getPossibleDependencies(formula, this.formulas);
     },
 
-    updateFormula(newFormula) {
+    updateFormula(newFormula: Formula) {
       this.editApi.updateFormula(newFormula).then((formulaWithResult) => {
         const index = this.formulas.findIndex((f: Formula) => f.id === formulaWithResult.id)
         this.formulas[index] = formulaWithResult

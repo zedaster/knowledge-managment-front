@@ -43,6 +43,7 @@ export default defineComponent({
 
   beforeUnmount() {
     const wrapper = this.$refs.loginButtonWrapper;
+    // @ts-ignore
     Tooltip.getOrCreateInstance(wrapper).dispose()
   },
 
@@ -64,6 +65,7 @@ export default defineComponent({
 
     updateTooltip() {
       const wrapper = this.$refs.loginButtonWrapper;
+      // @ts-ignore
       Tooltip.getOrCreateInstance(wrapper).setContent({'.tooltip-inner': this.tooltipText})
     }
   },
@@ -99,7 +101,7 @@ export default defineComponent({
       <div class="col-xl-4 col-lg-6 col-md-8 col-sm-12">
         <h1 class="mt-4 mb-4">Вход в личный кабинет</h1>
         <div class="alert alert-danger" role="alert" v-if="alertShown">
-          {{ this.alertText }}
+          {{ alertText }}
         </div>
         <div class="mb-3">
           <label for="usernameInput" class="form-label">Логин</label>

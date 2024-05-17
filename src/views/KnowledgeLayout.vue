@@ -1,6 +1,7 @@
 <script lang="ts">
 
-import {defineComponent, PropType} from "vue";
+import type {PropType} from "vue";
+import {defineComponent} from "vue";
 import KnowledgeMenu from "@/components/knowledge/KnowledgeMenu.vue";
 import type {ArticleTree} from "@/models/article/ArticleTree";
 import KnowledgeContainer from "@/components/knowledge/KnowledgeContainer.vue";

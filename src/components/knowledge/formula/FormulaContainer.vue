@@ -35,8 +35,10 @@ export default defineComponent({
       // @ts-ignore
       console.log("Update formula " + newValue.formula)
       if (newValue.result && variableService.hasDependencies(newValue.formula)) {
+        // @ts-ignore
         this.$refs.mathField.value = newValue.formula + "=" + newValue.result;
       } else {
+        // @ts-ignore
         this.$refs.mathField.value = newValue.formula;
       }
     }

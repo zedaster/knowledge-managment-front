@@ -1,12 +1,13 @@
 <script lang="ts">
 
-import {defineComponent, PropType} from "vue";
+import type {PropType} from "vue";
+import {defineComponent} from "vue";
 import KnowledgeContainer from "@/components/knowledge/KnowledgeContainer.vue";
 import NavBar from "@/components/nav/NavBar.vue";
 import {ArticleApi} from "@/api/ArticleApi";
 import {SpaceCleanUtils} from "@/utils/SpaceCleanUtils";
 import FormulaSelector from "@/components/knowledge/formula/FormulaSelector.vue";
-import Formula from "@/models/formula/Formula";
+import type Formula from "@/models/formula/Formula";
 import ArticleEditor from "@/components/knowledge/edit/ArticleEditor.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 

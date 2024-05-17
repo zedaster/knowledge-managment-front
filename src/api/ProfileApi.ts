@@ -1,5 +1,9 @@
 import type {UserInfo} from "@/models/user/UserInfo";
 import {useUserStore} from "@/store/UserStore";
+import {SecureRequestManager} from "@/api/SecureRequestManager";
+import config from "@/config/api.config"
+
+type ServerProfileInfo = Omit<UserInfo, 'id' | 'role'>
 
 export class ProfileApi {
     /**
@@ -7,13 +11,11 @@ export class ProfileApi {
      */
     public async loadUserInfo(): Promise<UserInfo> {
         const userStore = useUserStore()
-        return {
-            id: 1,
-            lastName: "Казанцев",
-            firstName: "Сергей",
-            patronymic: "Иванович",
-            createdAt: new Date(2023, 9, 10),
+        const cachedInfo = {
+            id: userStore.user!.id,
             role: userStore.user!.group
         }
+        const profileInfo = await new SecureRequestManager().get<ServerProfileInfo>(config.GET_PROFILE_INFO);
+        return {...profileInfo, ...cachedInfo}
     }
 }

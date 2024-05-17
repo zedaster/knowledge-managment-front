@@ -12,4 +12,19 @@ export default {
     GET_EDIT_DATA: apiUrl + 'history/',
     GET_CERTAIN_VERSION: apiUrl + 'history/versions/',
     COMMIT_VERSION: apiUrl + 'history/',
+
+    // formulas
+    GET_ALL_FORMULAS: apiUrl + "formulas",
+    GET_FORMULA_BY_ID: apiUrl + "formulas/",
+    GET_FORMULA_TITLE_MAP: apiUrl + "formulas/map",
+    UPDATE_FORMULA: apiUrl + "formulas/",
+    CREATE_FORMULA: apiUrl + "formulas",
+    DELETE_FORMULA: apiUrl + "formulas/",
+
+    // admin panel
+    GET_PANEL_USERS: apiUrl + "panel/users",
+    UPDATE_MANY_PANEL_USERS: apiUrl + "panel/users",
+
+    // user profile
+    GET_PROFILE_INFO: apiUrl + "profile/"
 };

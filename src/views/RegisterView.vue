@@ -50,6 +50,7 @@ export default defineComponent({
 
   beforeUnmount() {
     const wrapper = this.$refs.registerButtonWrapper;
+    // @ts-ignore
     Tooltip.getOrCreateInstance(wrapper).dispose()
   },
 
@@ -72,6 +73,7 @@ export default defineComponent({
 
     updateTooltip() {
       const wrapper = this.$refs.registerButtonWrapper;
+      // @ts-ignore
       Tooltip.getOrCreateInstance(wrapper).setContent({'.tooltip-inner': this.tooltipText})
     }
   },
@@ -129,7 +131,7 @@ export default defineComponent({
         <h1 class="mt-4 mb-4">Регистрация</h1>
 
         <div class="alert alert-danger" role="alert" v-if="alertShown">
-          {{ this.alertText }}
+          {{ this.alertText as string }}
         </div>
 
         <!-- Last name input -->

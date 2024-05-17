@@ -87,7 +87,7 @@ export default defineComponent({
     </div>
 
     <div v-else class="mt-4">
-      <ProfileField v-for="(value, key) in this.strUserInfo" :title="this.filedNames[key]" :value="value"/>
+      <ProfileField v-for="(value, key) in strUserInfo" :title="filedNames[key]" :value="value"/>
     </div>
   </KnowledgeLayout>
 </template>
