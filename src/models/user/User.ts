@@ -7,5 +7,6 @@ import type {Role} from "@/models/user/Role";
 export interface User {
     name: string,
     tokenPair: JwtTokenPair,
+    id: number
     group: Role
 }

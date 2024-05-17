@@ -5,6 +5,6 @@ export default interface Formula {
     id: number,
     title: string
     formula: string,
-    result: string | null;
+    result: number | null;
     dependencies: Record<string, number>;
 }

@@ -4,7 +4,9 @@ import FormulaField from "@/components/knowledge/formula/FormulaField.vue";
 import {FormulaApi} from "@/api/FormulaApi";
 import type Formula from "@/models/formula/Formula";
 import FormulaDependencies from "@/components/knowledge/formula/FormulaDependencies.vue";
+import {DependencyVariablesUtils} from "@/utils/formula/DependencyVariablesUtils";
 
+const variableService = new DependencyVariablesUtils();
 export default defineComponent({
   components: {FormulaDependencies, FormulaField},
 
@@ -18,24 +20,27 @@ export default defineComponent({
   data() {
     return {
       api: new FormulaApi(),
-      formula: null as null | Formula
+      formula: null as null | Formula,
     }
   },
 
   mounted() {
     this.api.getOneById(this.formulaId).then((formula: Formula) => {
       this.formula = formula;
-      // @ts-ignore
-      this.$refs.mathField.value = formula.formula;
     })
   },
 
   watch: {
     formula(newValue) {
       // @ts-ignore
-      this.$refs.mathField.value = newValue.formula;
+      console.log("Update formula " + newValue.formula)
+      if (newValue.result && variableService.hasDependencies(newValue.formula)) {
+        this.$refs.mathField.value = newValue.formula + "=" + newValue.result;
+      } else {
+        this.$refs.mathField.value = newValue.formula;
+      }
     }
-  }
+  },
 })
 </script>
 

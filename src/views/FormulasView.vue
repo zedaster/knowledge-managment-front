@@ -47,7 +47,10 @@ export default defineComponent({
     },
 
     updateFormula(newFormula) {
-      this.editApi.updateFormula(newFormula);
+      this.editApi.updateFormula(newFormula).then((formulaWithResult) => {
+        const index = this.formulas.findIndex((f: Formula) => f.id === formulaWithResult.id)
+        this.formulas[index] = formulaWithResult
+      })
     },
 
     addFormula() {

@@ -89,10 +89,10 @@ export class AuthApi {
     private extractUser(tokenPair: JwtTokenPair): User {
         const payload = this.extractJwtPayload(tokenPair.accessToken);
         const nickname = payload.sub
-        // TODO Api: Get user group here
         return {
             tokenPair: tokenPair,
             name: nickname,
+            id: 1,
             group: 'admin'
         }
     }

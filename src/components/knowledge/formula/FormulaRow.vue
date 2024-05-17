@@ -93,7 +93,6 @@ export default defineComponent({
                     :editable="isEditable"
                     @remove="remove"/>
       <!-- TODO Provide warn variables -->
-      <!-- TODO Provide result -->
       <FormulaField v-model="formula.formula"
                     :result="formula.result"
                     :warn-variables="[]"

@@ -67,6 +67,14 @@ export class DependencyVariablesUtils {
     }
 
     /**
+     * Checks if the formula has one or more dependencies
+     * @param formula
+     */
+    public hasDependencies(formula: string): boolean {
+        return this.extractPossibleVariables(formula).length > 0;
+    }
+
+    /**
      * Extracts variables from a specified formula
      * @param formula The specified formula
      * @private

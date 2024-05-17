@@ -16,21 +16,21 @@ export class FormulaApi {
             id: 1,
             title: 'Mass',
             formula: 'm=500',
-            result: null,
+            result: 500,
             dependencies: {}
         },
         {
             id: 2,
             title: 'Light speed',
             formula: 'c=299792458',
-            result: null,
+            result: 299792458,
             dependencies: {}
         },
         {
             id: 3,
             title: 'Einstein theory',
             formula: 'E=mc^2',
-            result: null,
+            result: 44937758936840880000,
             dependencies: {
                 'm': 1,
                 'c': 2
@@ -80,7 +80,7 @@ export class FormulaApi {
      * Updates formula with the same id
      * @param newFormula formula object with updated properties.
      */
-    public async updateFormula(newFormula: Formula): Promise<void> {
+    public async updateFormula(newFormula: Omit<Formula, 'result'>): Promise<Formula> {
         this.throwIfNotAuthorized();
         const formulas = this.getLocalFormulas();
         for (const i in formulas) {
@@ -89,10 +89,11 @@ export class FormulaApi {
                 continue;
             }
 
-            formulas[i] = newFormula;
+            formulas[i] = {...newFormula, result: (formulas[i].result ?? 0) + 1};
             this.saveLocalFormulas(formulas);
-            break;
+            return formulas[i];
         }
+        throw "No formula to update";
     }
 
     /**
@@ -102,16 +103,15 @@ export class FormulaApi {
         this.throwIfNotAuthorized();
         const formulas = this.getLocalFormulas();
         const maxId = this.findMaxId(formulas)
-        const newFormula: Formula = {
+        const newFormula: Omit<Formula, 'result'> = {
             id: maxId + 1,
             title: 'Новая формула',
             formula: 'a=100',
-            result: null,
             dependencies: {}
         };
-        formulas.push(newFormula);
+        formulas.push(Object.assign({result: 100}, newFormula));
         this.saveLocalFormulas(formulas);
-        return newFormula;
+        return Object.assign({result: 100}, newFormula);
     }
 
     /**

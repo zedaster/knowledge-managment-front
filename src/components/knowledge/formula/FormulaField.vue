@@ -1,10 +1,12 @@
 <script lang="ts">
 import EditIcon from "@/components/icons/EditIcon.vue";
-import {defineComponent} from "vue";
+import {defineComponent, PropType} from "vue";
 import SaveIcon from "@/components/icons/SaveIcon.vue";
 import CancelIcon from "@/components/icons/CancelIcon.vue";
 import {DependencyVariablesUtils} from "@/utils/formula/DependencyVariablesUtils";
 import AssuranceModal from "@/components/modal/AssuranceModal.vue";
+
+const variableService = new DependencyVariablesUtils();
 
 /**
  * Special field with formula value and its result
@@ -24,6 +26,14 @@ export default defineComponent({
     modelValue: {
       type: String,
       required: true,
+    },
+
+    /**
+     * Result of the formula
+     */
+    result: {
+      type: null as PropType<null | number>,
+      default: null
     },
 
     /**
@@ -49,19 +59,20 @@ export default defineComponent({
   emits: ['update:modelValue'],
 
   mounted() {
-    this.setDomShowingValue(this.modelValue);
+    this.setDomShowingParams(this.modelValue, this.result);
   },
 
   methods: {
     editContent() {
-      this.oldValue = (this.$refs.mathField as any).value;
+      this.oldValue = this.modelValue;
+      this.setDomShowingParams(this.oldValue, null);
       this.isEditing = true;
     },
 
     cancelEditing() {
       this.isEditing = false;
       this.newValue = this.oldValue;
-      this.setDomShowingValue(this.oldValue);
+      this.setDomShowingParams(this.oldValue, this.result);
     },
 
     save() {
@@ -81,7 +92,7 @@ export default defineComponent({
 
     produceSaving() {
       this.canBeSaved = false;
-      this.setDomShowingValue(this.newValue);
+      //this.setDomShowingParams(this.newValue);
       this.$emit('update:modelValue', this.newValue);
       this.isEditing = false;
     },
@@ -89,8 +100,12 @@ export default defineComponent({
     /**
      * Sets current showingValue as value to math-field DOM element
      */
-    setDomShowingValue(value: string) {
-      (this.$refs.mathField as any).value = value;
+    setDomShowingParams(formula: string, result: number | null) {
+      if (!this.isEditing && result && variableService.hasDependencies(formula)) {
+        (this.$refs.mathField as any).value = formula + "=" + result;
+      } else {
+        (this.$refs.mathField as any).value = formula;
+      }
     },
 
     onInput(event) {
@@ -102,6 +117,12 @@ export default defineComponent({
       this.lostDependencies = new DependencyVariablesUtils()
           .getLostDependencies(this.newValue, this.warnVariables);
     }
+  },
+
+  watch: {
+    result(newValue) {
+      this.setDomShowingParams(this.modelValue, newValue)
+    },
   }
 })
 
